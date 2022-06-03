@@ -1,0 +1,19 @@
+{
+  "name": "mvpdispensary",
+  "version": "0.0.1",
+  "description": "Node server for MVP Dispensary website",
+  "main": "server.js",
+  "scripts": {
+    "test": "test_server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WarBuggy/mvpdispensary.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WarBuggy/mvpdispensary/issues"
+  },
+  "homepage": "https://github.com/WarBuggy/mvpdispensary#readme"
+}

@@ -1,5 +1,5 @@
 const db = require('./db/db.js');
-const common = require('./common/common.js');
+const common = require('./common.js');
 
 const express = require('express');
 const cors = require('cors');

@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/WarBuggy/mvpdispensary/issues"
   },
-  "homepage": "https://github.com/WarBuggy/mvpdispensary#readme"
+  "homepage": "https://github.com/WarBuggy/mvpdispensary#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.2",
+    "express": "^4.18.1",
+    "http": "0.0.1-security",
+    "mysql": "^2.18.1"
+  }
 }

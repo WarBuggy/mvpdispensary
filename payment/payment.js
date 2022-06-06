@@ -67,7 +67,7 @@ module.exports = function (app) {
             response.status(errorCode);
             response.json({ success: false, });
             return;
-        }
+        } 1
 
         let resJson = {
             success: true,
@@ -172,35 +172,68 @@ module.exports = function (app) {
         let dbItemList = result.sqlResults;
         for (let i = 0; i < itemList.length; i++) {
             let item = itemList[0];
-            let match = false;
+            let matchId = false;
+            let matchPrice = false;
+            let matchPriceDecimal = false;
             let available = true;
             for (let j = 0; j < dbItemList.length; j++) {
                 let dbItem = dbItemList[j];
-                if (item.productId == dbItem.id &&
-                    item.price == dbItem.price &&
-                    item.priceDecimal == dbItem.priceDecimal) {
-                    match = true;
-                    if (dbItem.availability != 0) {
-                        available = false;
-                    }
+                matchId = false;
+                matchPrice = false;
+                matchPriceDecimal = false;
+
+                if (item.productId != dbItem.id) {
+                    continue;
+                }
+                matchId = true;
+
+                if (item.price != dbItem.price) {
+                    continue;
+                }
+                matchPrice = true;
+
+                if (item.priceDecimal != dbItem.priceDecimal) {
+                    continue;
+                }
+                matchPriceDecimal = true;
+
+                if (dbItem.availability != 0) {
+                    available = false;
+                }
+
+                if (matchId && matchPrice && matchPriceDecimal) {
                     break;
                 }
             }
-            if (!match) {
+            if (!matchId) {
                 return {
                     result: false,
                     errorCode: 1,
                     errorMessage: `Product with id ${item.productId} does not exists in db`,
                 };
             }
-            if (!available) {
+            if (!matchPrice) {
                 return {
                     result: false,
                     errorCode: 2,
+                    errorMessage: `Product with id ${item.productId} does not match db price (${item.price} and ${dbItem.price})`,
+                };
+            }
+            if (!matchPriceDecimal) {
+                return {
+                    result: false,
+                    errorCode: 2,
+                    errorMessage: `Product with id ${item.productId} does not match db price decimal (${item.priceDecimal} and ${dbItem.priceDecimal})`,
+                };
+            }
+            if (!available) {
+                return {
+                    result: false,
+                    errorCode: 3,
                     errorMessage: `Product with id ${item.productId} is no long available`,
                 };
             }
         }
-        return { result: true };
-    };
+    }
+    return { result: true };
 };

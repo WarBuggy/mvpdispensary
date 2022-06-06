@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/WarBuggy/mvpdispensary#readme",
   "dependencies": {
+    "axios": "^0.27.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.2",
     "express": "^4.18.1",

@@ -75,7 +75,7 @@ module.exports = function (app) {
             };
         }
 
-        let itemStringList = cartString.spit('|||');
+        let itemStringList = cartString.split('|||');
         let productIDList = [];
         let itemList = [];
         for (let i = 0; i < itemStringList.length; i++) {

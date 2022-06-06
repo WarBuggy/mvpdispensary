@@ -171,7 +171,7 @@ module.exports = function (app) {
         }
         let dbItemList = result.sqlResults;
         for (let i = 0; i < itemList.length; i++) {
-            let item = itemList[0];
+            let item = itemList[i];
             let matchId = false;
             let dbPrice = 0;
             let dbPriceDecimal = 0;

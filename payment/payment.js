@@ -93,7 +93,7 @@ module.exports = function (app) {
         for (let i = 0; i < itemStringList.length; i++) {
             let itemString = itemStringList[i];
             let itemInfo = itemString.split(';');
-            if (itemInfo.length != 3) {
+            if (itemInfo.length != 4) {
                 return {
                     result: false,
                     errorCode: 1,
@@ -103,6 +103,7 @@ module.exports = function (app) {
             let productId = itemInfo[0];
             let quantity = itemInfo[1];
             let price = itemInfo[2];
+            let priceDecimal = itemInfo[3];
             if (!common.isNumeric(productId)) {
                 return {
                     result: false,
@@ -124,6 +125,20 @@ module.exports = function (app) {
                     errorMessage: `Price is NaN (${itemString})`,
                 };
             }
+            if (!common.priceDecimal(priceDecimal)) {
+                return {
+                    result: false,
+                    errorCode: 5,
+                    errorMessage: `Price decimal is NaN (${itemString})`,
+                };
+            }
+            if (priceDecimal < 0 || priceDecimal > 99) {
+                return {
+                    result: false,
+                    errorCode: 6,
+                    errorMessage: `Invalid price decimal`,
+                };
+            }
             productIDList.push(productId);
             let item = {
                 productId,
@@ -138,7 +153,8 @@ module.exports = function (app) {
     async function crossCheckDBData(itemList, productIDList, requestIp) {
         let sql = `SELECT \`product\`.\`id\`, \`product\`.\`name\`, 
             \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\` 
-            FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')})`;
+            FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')}) 
+            ORDER BY \`product\`.\`id\``;
         let logInfo = {
             username: 99,
             sql,
@@ -160,6 +176,10 @@ module.exports = function (app) {
                 errorCode: 1,
                 errorMessage: `At least one product does not exist in database`,
             };
+        }
+
+        for (let i = 0; i < itemList.length; i++) {
+
         }
         return { result: true };
     };

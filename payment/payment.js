@@ -144,21 +144,17 @@ module.exports = function (app) {
                 productId,
                 quantity,
                 price,
+                priceDecimal,
             };
             itemList.push(item);
         }
-        itemList.sort(function (a, b) {
-            return a.productId - b.productId;
-        });
-        console.log(itemList);
         return { result: true, itemList, productIDList, };
     };
 
     async function crossCheckDBData(itemList, productIDList, requestIp) {
         let sql = `SELECT \`product\`.\`id\`, \`product\`.\`name\`, 
             \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\` 
-            FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')}) 
-            ORDER BY \`product\`.\`id\``;
+            FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')})`;
         let logInfo = {
             username: 99,
             sql,
@@ -173,17 +169,37 @@ module.exports = function (app) {
                 errorMessage: `Database error`,
             };
         }
-        let dbData = result.sqlResults;
-        if (itemList.length != dbData.length) {
-            return {
-                result: false,
-                errorCode: 1,
-                errorMessage: `At least one product does not exist in database`,
-            };
-        }
-
+        let dbItemList = result.sqlResults;
         for (let i = 0; i < itemList.length; i++) {
-
+            let item = itemList[0];
+            let match = false;
+            let available = true;
+            for (let j = 0; j < dbItemList.length; j++) {
+                let dbItem = dbItemList[j];
+                if (item.productId == dbItem.id &&
+                    item.price == dbItem.price &&
+                    item.priceDecimal == dbItem.priceDecimal) {
+                    match = true;
+                    if (dbItem.availability != 0) {
+                        available = false;
+                    }
+                    break;
+                }
+            }
+            if (!match) {
+                return {
+                    result: false,
+                    errorCode: 1,
+                    errorMessage: `Product with id ${item.productId} does not exists in db`,
+                };
+            }
+            if (!available) {
+                return {
+                    result: false,
+                    errorCode: 2,
+                    errorMessage: `Product with id ${item.productId} is no long available`,
+                };
+            }
         }
         return { result: true };
     };

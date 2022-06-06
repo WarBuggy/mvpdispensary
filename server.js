@@ -34,7 +34,7 @@ function prepareHttpServer() {
     app.use(express.urlencoded({ limit: '10mb', extended: false, }));
     app.use(cors());
     http.createServer(app).listen(systemConfig.httpPort, function () {
-        common.consoleLog('HTTP Server started on port ' + systemConfig.httpPort + '.');
+        common.consoleLog(`HTTP Server started on port ${systemConfig.httpPort}.`);
         require('./payment/payment.js')(app);
     });
 };

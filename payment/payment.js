@@ -10,6 +10,7 @@ module.exports = function (app) {
     app.post('/payment/make', async function (request, response) {
         let requestIp = common.getReadableIP(request);
         let purpose = 'make a payment';
+        let errorString = `${requestIp} Error when ${purpose}:`;
         common.consoleLog(`${requestIp} requested to ${purpose}.`);
 
         let cartString = (request.body.cartString || '').trim();
@@ -24,9 +25,10 @@ module.exports = function (app) {
         console.log(`note: ${note}`);
         console.log(`total: ${total}`);
 
+
         if (!common.validateEmail(email)) {
             let errorCode = 600;
-            common.consoleLogError(`Error when ${purpose}: Email is not valid (${email}).`);
+            common.consoleLogError(`${errorString} Email is not valid (${email}).`);
             response.status(errorCode);
             response.json({ success: false, });
             return;
@@ -34,7 +36,7 @@ module.exports = function (app) {
 
         if (deliveryAddress == '') {
             let errorCode = 601;
-            common.consoleLogError(`Error when ${purpose}: Missing delivery address.`);
+            common.consoleLogError(`${errorString} Missing delivery address.`);
             response.status(errorCode);
             response.json({ success: false, });
             return;
@@ -42,7 +44,7 @@ module.exports = function (app) {
 
         if (!common.isNumeric(total)) {
             let errorCode = 602;
-            common.consoleLogError(`Error when ${purpose}: Total is not a number (${total}).`);
+            common.consoleLogError(`${errorString} Total is not a number (${total}).`);
             response.status(errorCode);
             response.json({ success: false, });
             return;
@@ -51,7 +53,7 @@ module.exports = function (app) {
         let checkCartStringResult = checkCartString(cartString);
         if (!checkCartStringResult.result) {
             let errorCode = 610 + checkCartStringResult.errorCode;
-            common.consoleLogError(`Error when ${purpose}: ${checkCartStringResult.errorMessage}.`);
+            common.consoleLogError(`${errorString} ${checkCartStringResult.errorMessage}.`);
             response.status(errorCode);
             response.json({ success: false, });
             return;
@@ -61,7 +63,7 @@ module.exports = function (app) {
             await crossCheckDBData(checkCartStringResult.itemList, checkCartStringResult.productIDList, requestIp);
         if (!crossCheckDBDataResult.result) {
             let errorCode = 620 + crossCheckDBDataResult.errorCode;
-            common.consoleLogError(`Error when ${purpose}: ${crossCheckDBDataResult.errorMessage}.`);
+            common.consoleLogError(`${errorString} ${crossCheckDBDataResult.errorMessage}.`);
             response.status(errorCode);
             response.json({ success: false, });
             return;
@@ -73,7 +75,7 @@ module.exports = function (app) {
             url: 'mvpdispensary.com',
         };
         response.json(resJson);
-        common.consoleLog(`(${requestIp}) Request for ${purpose} was successfully handled.`);
+        common.consoleLog(`${requestIp} Request for ${purpose} was successfully handled.`);
     });
 
     function checkCartString(cartString) {

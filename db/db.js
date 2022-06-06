@@ -1,6 +1,5 @@
 const dbConfig = require('./config.js');
 const common = require('../common.js');
-const systemConfig = require('../systemConfig.js');
 const mysql = require('mysql');
 
 let connection = null;
@@ -59,7 +58,7 @@ module.exports = {
                 common.consoleLog('Database connection was closed successfully.');
                 resolve();
             } catch (closingError) {
-                common.consoleLogError('Error while closing database connection:\n' + closingError + '.');
+                common.consoleLogError(`Error while closing database connection:\n${closingError}.`);
                 connection.destroy();
                 resolve();
             }
@@ -89,11 +88,11 @@ function createConnection() {
         });
         aConnection.connect(function (connectionError) {
             if (connectionError) {
-                common.consoleLogError('Error while connecting to database:\n' + connectionError + '.');
+                common.consoleLogError(`Error while connecting to database:\n${connectionError}.`);
                 resolve(null);
                 return;
             }
-            common.consoleLog('Database connected with id ' + aConnection.threadId + '.');
+            common.consoleLog(`Database connected with id ${aConnection.threadId}.`);
             resolve(aConnection);
         });
     });

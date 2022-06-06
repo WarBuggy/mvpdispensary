@@ -217,6 +217,6 @@ module.exports = function (app) {
                 };
             }
         }
+        return { result: true };
     }
-    return { result: true };
 };

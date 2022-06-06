@@ -1,5 +1,8 @@
 # database config file
 db/config.js
+payment/config.js
+backendURL.js
+
 
 # Logs
 logs

@@ -30,7 +30,7 @@ module.exports = function (app) {
             let errorCode = 600;
             common.consoleLogError(`${errorString} Email is not valid (${email}).`);
             response.status(errorCode);
-            response.json({ success: false, });
+            response.json({ success: false, message: 'Email không hợp lệ' });
             return;
         }
 

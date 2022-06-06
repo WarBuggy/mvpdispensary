@@ -9,8 +9,8 @@ module.exports = function (app) {
     //a request payment is made
     app.post('/payment/make', function (request, response) {
         let requestIp = common.getReadableIP(request);
-        let purpose = 'making a payment';
-        common.consoleLog(`(${requestIp}) Received request for ${purpose}.`);
+        let purpose = 'make a payment';
+        common.consoleLog(`${requestIp} requested to ${purpose}.`);
 
         let cartString = (request.body.cartString || '').trim();
         let email = (request.body.email || '').trim();
@@ -50,12 +50,15 @@ module.exports = function (app) {
 
         let checkCartStringResult = checkCartString(cartString);
         if (!checkCartStringResult.result) {
-            let errorCode = 603;
+            let errorCode = 603 + checkCartStringResult.errorCode;
             common.consoleLogError(`Error when ${purpose}: ${checkCartStringResult.errorMessage}.`);
-            response.status(errorCode + checkCartStringResult.errorCode);
+            response.status(errorCode);
             response.json({ success: false, });
             return;
         }
+
+        let crossCheckDBDataResult = await crossCheckDBData(itemList, productIDList, requestIp);
+        console.log(crossCheckDBDataResult);
 
         let resJson = {
             success: true,
@@ -120,6 +123,21 @@ module.exports = function (app) {
             };
             itemList.push(item);
         }
-        return { result: true, itemList, };
+        return { result: true, itemList, productIDList, };
+    };
+
+    function crossCheckDBData(itemList, productIDList, requestIp) {
+        let sql = `SELECT \`product\`.\`id\`, \`product\`.\`name\`, 
+            \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\`,
+            FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')})`;
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Cross check product db data',
+        };
+        let result = await db.query(logInfo);
+        console.log(result);
+        return result;
     };
 };

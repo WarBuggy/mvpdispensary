@@ -6,53 +6,32 @@ const mysql = require('mysql');
 let connection = null;
 
 module.exports = {
-    query: function (params, logInfo) {
-        if (dbConfig.logLogInfo === true) {
-            console.log('Log Info:');
-            console.log(logInfo);
-        }
-        if (dbConfig.logParams === true) {
-            console.log('Params:');
-            console.log(params);
-        }
+    query: function (logInfo, params) {
+        logQueryToConsole(logInfo, params);
         return new Promise(function (resolve) {
             module.exports.getConnection()
                 .then(function (connection) {
-                    let sql = 'CALL ' + logInfo.source + '(';
+                    let sql = logInfo.sql;
                     if (params) {
-                        let questionMark = [];
-                        for (let i = 0; i < params.length; i++) {
-                            questionMark.push('?');
-                        }
-                        sql = sql + questionMark.join(',');
+                        sql = mysql.format(sql, params);
                     }
-                    sql = sql + ')';
-                    let formatQuery = mysql.format(sql, params);
-                    connection.query(formatQuery, async function (queryError, selectResult, fields) {
+                    connection.query(sql, async function (queryError, selectResult, fields) {
                         if (queryError) {
-                            let consoleMessage = 'Result code 901. Error while executing a query from database:\n' + queryError;
-                            await logErrorToDB(logInfo, consoleMessage);
+                            let consoleMessage = `Result code 901. Error while executing a query from database:\n${queryError}`;
+                            await logActionToDB(logInfo, consoleMessage, params);
                             resolve({ resultCode: 901, });
                             return;
                         }
-                        let resultCode = selectResult[0][0].result;
-                        if (resultCode == null) {
-                            let errorMessage = 'Result code 902. No result code found in database response: ' + logInfo.source;
-                            await logErrorToDB(logInfo, errorMessage);
-                            resolve({ resultCode: 902, });
-                            return;
-                        }
+                        await logActionToDB(logInfo, 'Result OK', params);
                         let result = {
                             sqlResults: selectResult,
                             fields: fields,
-                            resultCode,
                         };
                         resolve(result);
                     });
                 });
         });
     },
-
 
     getConnection: function () {
         return new Promise(function (resolve) {
@@ -87,6 +66,17 @@ module.exports = {
     },
 };
 
+function logQueryToConsole(logInfo, params) {
+    if (dbConfig.logLogInfo === true) {
+        console.log('Log Info:');
+        console.log(logInfo);
+    }
+    if (dbConfig.logParams === true) {
+        console.log('Params:');
+        console.log(params || 'No param provided.');
+    }
+};
+
 function createConnection() {
     return new Promise(function (resolve) {
         let aConnection = mysql.createConnection({
@@ -108,22 +98,25 @@ function createConnection() {
     });
 };
 
-function logErrorToDB(logInfo, errorMessage) {
+function logActionToDB(logInfo, result, params) {
     return new Promise(function (resolve) {
         module.exports.getConnection()
             .then(function (connection) {
-                let logErrorParams = [logInfo.username, logInfo.source, logInfo.userIP, errorMessage];
-                let formatQuery = mysql.format('CALL ' + systemConfig.systemName + '`_system`.`SYSTEM_LOG_ERROR`(?, ?, ?, ?)', logErrorParams);
+                let sql = `INSERT INTO \`mvpdispensary_system\`.\`log_action\` 
+                    \`user\`, \`sql\`, \`ip\`, \`purpose\`, \`result\`, \`param\`) 
+                    VALUES (?, ?, ?, ?, ?, ?)`;
+                let paramString = (params || []).join(',');
+                let logErrorParams = [logInfo.username, logInfo.sql, logInfo.userIP, logInfo.purpose, result, paramString];
+                let formatQuery = mysql.format(sql, logErrorParams);
                 connection.query(formatQuery, function (logError) {
                     if (logError) {
-                        common.consoleLogError(errorMessage + '.\nFailed to log error to database. Log error:\n' +
-                            logError + '.');
+                        common.consoleLogError(`${logInfo.purpose}. ${result}.\nFailed to log error to database. Log error:\n${logError}.`);
                         resolve(false);
+                        return;
                     }
-                    common.consoleLogError(errorMessage + '.\nError logged.');
+                    common.consoleLog(`${logInfo.purpose}. ${result}. Action logged.`);
                     resolve(true);
                 });
-
             });
     });
 };

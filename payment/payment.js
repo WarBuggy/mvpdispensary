@@ -175,7 +175,7 @@ module.exports = function (app) {
             let matchId = false;
             let dbPrice = 0;
             let dbPriceDecimal = 0;
-            let available = true;
+            let availability = 0;
             for (let j = 0; j < dbItemList.length; j++) {
                 let dbItem = dbItemList[j];
                 matchId = false;
@@ -184,10 +184,8 @@ module.exports = function (app) {
                 }
                 matchId = true;
                 dbPrice = dbItem.price;
-                dbPriceDecimal = dbItem.priceDecimal;
-                if (dbItem.availability != 0) {
-                    available = false;
-                }
+                dbPriceDecimal = dbItem.price_decimal;
+                availability = dbItem.availability;
                 break;
             }
             if (!matchId) {
@@ -211,7 +209,7 @@ module.exports = function (app) {
                     errorMessage: `Product with id ${item.productId} does not match db price decimal (${item.priceDecimal} vs ${dbPriceDecimal})`,
                 };
             }
-            if (!available) {
+            if (availability != 0) {
                 return {
                     result: false,
                     errorCode: 4,

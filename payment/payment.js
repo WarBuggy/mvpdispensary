@@ -147,6 +147,10 @@ module.exports = function (app) {
             };
             itemList.push(item);
         }
+        itemList.sort(function (a, b) {
+            return a.productId - b.productId;
+        });
+        console.log(itemList);
         return { result: true, itemList, productIDList, };
     };
 

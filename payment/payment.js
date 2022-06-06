@@ -173,37 +173,22 @@ module.exports = function (app) {
         for (let i = 0; i < itemList.length; i++) {
             let item = itemList[0];
             let matchId = false;
-            let matchPrice = false;
-            let matchPriceDecimal = false;
+            let dbPrice = 0;
+            let dbPriceDecimal = 0;
             let available = true;
             for (let j = 0; j < dbItemList.length; j++) {
                 let dbItem = dbItemList[j];
                 matchId = false;
-                matchPrice = false;
-                matchPriceDecimal = false;
-
                 if (item.productId != dbItem.id) {
                     continue;
                 }
                 matchId = true;
-
-                if (item.price != dbItem.price) {
-                    continue;
-                }
-                matchPrice = true;
-
-                if (item.priceDecimal != dbItem.priceDecimal) {
-                    continue;
-                }
-                matchPriceDecimal = true;
-
+                dbPrice = dbItem.price;
+                dbPriceDecimal = dbItem.priceDecimal;
                 if (dbItem.availability != 0) {
                     available = false;
                 }
-
-                if (matchId && matchPrice && matchPriceDecimal) {
-                    break;
-                }
+                break;
             }
             if (!matchId) {
                 return {
@@ -212,24 +197,24 @@ module.exports = function (app) {
                     errorMessage: `Product with id ${item.productId} does not exists in db`,
                 };
             }
-            if (!matchPrice) {
+            if (item.price != dbPrice) {
                 return {
                     result: false,
                     errorCode: 2,
-                    errorMessage: `Product with id ${item.productId} does not match db price (${item.price} and ${dbItem.price})`,
+                    errorMessage: `Product with id ${item.productId} does not match db price (${item.price} vs ${dbPrice})`,
                 };
             }
-            if (!matchPriceDecimal) {
+            if (item.priceDecimal != dbPriceDecimal) {
                 return {
                     result: false,
-                    errorCode: 2,
-                    errorMessage: `Product with id ${item.productId} does not match db price decimal (${item.priceDecimal} and ${dbItem.priceDecimal})`,
+                    errorCode: 3,
+                    errorMessage: `Product with id ${item.productId} does not match db price decimal (${item.priceDecimal} vs ${dbPriceDecimal})`,
                 };
             }
             if (!available) {
                 return {
                     result: false,
-                    errorCode: 3,
+                    errorCode: 4,
                     errorMessage: `Product with id ${item.productId} is no long available`,
                 };
             }

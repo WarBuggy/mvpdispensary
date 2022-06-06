@@ -80,7 +80,7 @@ module.exports = function (app) {
         let itemList = [];
         for (let i = 0; i < itemStringList.length; i++) {
             let itemString = itemStringList[i];
-            let itemInfo = itemString.split(',');
+            let itemInfo = itemString.split(';');
             if (itemInfo.length != 3) {
                 return {
                     result: false,

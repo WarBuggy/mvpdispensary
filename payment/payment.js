@@ -57,7 +57,8 @@ module.exports = function (app) {
             return;
         }
 
-        let crossCheckDBDataResult = await crossCheckDBData(itemList, productIDList, requestIp);
+        let crossCheckDBDataResult =
+            await crossCheckDBData(checkCartStringResult.itemList, checkCartStringResult.productIDList, requestIp);
         console.log(crossCheckDBDataResult);
 
         let resJson = {

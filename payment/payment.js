@@ -7,7 +7,7 @@ const { isNumeric } = require('../common.js');
 module.exports = function (app) {
     //#region /api/payment/make
     //a request payment is made
-    app.post('/payment/make', function (request, response) {
+    app.post('/payment/make', async function (request, response) {
         let requestIp = common.getReadableIP(request);
         let purpose = 'make a payment';
         common.consoleLog(`${requestIp} requested to ${purpose}.`);
@@ -126,7 +126,7 @@ module.exports = function (app) {
         return { result: true, itemList, productIDList, };
     };
 
-    function crossCheckDBData(itemList, productIDList, requestIp) {
+    async function crossCheckDBData(itemList, productIDList, requestIp) {
         let sql = `SELECT \`product\`.\`id\`, \`product\`.\`name\`, 
             \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\`,
             FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')})`;

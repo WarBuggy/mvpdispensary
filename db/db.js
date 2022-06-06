@@ -26,6 +26,7 @@ module.exports = {
                         let result = {
                             sqlResults: selectResult,
                             fields: fields,
+                            resultCode: 0,
                         };
                         resolve(result);
                     });

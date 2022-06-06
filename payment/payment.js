@@ -50,7 +50,7 @@ module.exports = function (app) {
 
         let checkCartStringResult = checkCartString(cartString);
         if (!checkCartStringResult.result) {
-            let errorCode = 603 + checkCartStringResult.errorCode;
+            let errorCode = 610 + checkCartStringResult.errorCode;
             common.consoleLogError(`Error when ${purpose}: ${checkCartStringResult.errorMessage}.`);
             response.status(errorCode);
             response.json({ success: false, });
@@ -59,7 +59,13 @@ module.exports = function (app) {
 
         let crossCheckDBDataResult =
             await crossCheckDBData(checkCartStringResult.itemList, checkCartStringResult.productIDList, requestIp);
-        console.log(crossCheckDBDataResult);
+        if (!crossCheckDBDataResult.result) {
+            let errorCode = 620 + crossCheckDBDataResult.errorCode;
+            common.consoleLogError(`Error when ${purpose}: ${crossCheckDBDataResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, });
+            return;
+        }
 
         let resJson = {
             success: true,
@@ -138,7 +144,21 @@ module.exports = function (app) {
             purpose: 'Cross check product db data',
         };
         let result = await db.query(logInfo);
-        console.log(result);
-        return result;
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        let dbData = result.sqlResults;
+        if (itemList.length != dbData.length) {
+            return {
+                result: false,
+                errorCode: 1,
+                errorMessage: `At least one product does not exist in database`,
+            };
+        }
+        return { result: true };
     };
 };

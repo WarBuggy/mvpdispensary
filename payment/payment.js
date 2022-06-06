@@ -38,7 +38,7 @@ module.exports = function (app) {
             let errorCode = 601;
             common.consoleLogError(`${errorString} Missing delivery address.`);
             response.status(errorCode);
-            response.json({ success: false, });
+            response.json({ success: false, message: 'Không tìm thấy địa chỉ gửi hàng' });
             return;
         }
 
@@ -46,7 +46,7 @@ module.exports = function (app) {
             let errorCode = 602;
             common.consoleLogError(`${errorString} Total is not a number (${total}).`);
             response.status(errorCode);
-            response.json({ success: false, });
+            response.json({ success: false, message: 'Tổng số tiền không phải là một con số' });
             return;
         }
 
@@ -55,7 +55,7 @@ module.exports = function (app) {
             let errorCode = 610 + checkCartStringResult.errorCode;
             common.consoleLogError(`${errorString} ${checkCartStringResult.errorMessage}.`);
             response.status(errorCode);
-            response.json({ success: false, });
+            response.json({ success: false, message: 'Dữ liệu đặt mua nhận được không hợp lệ' });
             return;
         }
 
@@ -65,7 +65,7 @@ module.exports = function (app) {
             let errorCode = 620 + crossCheckDBDataResult.errorCode;
             common.consoleLogError(`${errorString} ${crossCheckDBDataResult.errorMessage}.`);
             response.status(errorCode);
-            response.json({ success: false, });
+            response.json({ success: false, message: 'Thông tin sản phẩm đặt mua nhận được không hợp lệ' });
             return;
         } 1
 

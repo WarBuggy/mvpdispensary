@@ -85,7 +85,7 @@ module.exports = function (app) {
                 return {
                     result: false,
                     errorCode: 1,
-                    errorMessage: `Bad item info string (${itemInfo})`,
+                    errorMessage: `Bad item info string (${itemString})`,
                 };
             }
             let productId = itemInfo[0];
@@ -95,21 +95,21 @@ module.exports = function (app) {
                 return {
                     result: false,
                     errorCode: 2,
-                    errorMessage: `Product ID is NaN (${itemInfo})`,
+                    errorMessage: `Product ID is NaN (${itemString})`,
                 };
             }
             if (!common.isNumeric(quantity)) {
                 return {
                     result: false,
                     errorCode: 3,
-                    errorMessage: `Purchase quantity is NaN (${itemInfo})`,
+                    errorMessage: `Purchase quantity is NaN (${itemString})`,
                 };
             }
             if (!common.isNumeric(price)) {
                 return {
                     result: false,
                     errorCode: 4,
-                    errorMessage: `Price is NaN (${itemInfo})`,
+                    errorMessage: `Price is NaN (${itemString})`,
                 };
             }
             productIDList.push(productId);

@@ -16,7 +16,7 @@ module.exports = function (app) {
         let email = (request.body.email || '').trim();
         let deliveryAddress = (request.body.deliveryAddress || '').trim();
         let note = (request.body.note || '').trim();
-        let total = request.body.note || '';
+        let total = request.body.total || '';
 
         console.log(`cartString: ${cartString}`);
         console.log(`email: ${email}`);

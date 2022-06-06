@@ -103,18 +103,18 @@ function logActionToDB(logInfo, result, params) {
         module.exports.getConnection()
             .then(function (connection) {
                 let sql = `INSERT INTO \`mvpdispensary_system\`.\`log_action\` 
-                    \`user\`, \`sql\`, \`ip\`, \`purpose\`, \`result\`, \`param\`) 
+                    (\`user\`, \`sql\`, \`ip\`, \`purpose\`, \`result\`, \`param\`) 
                     VALUES (?, ?, ?, ?, ?, ?)`;
                 let paramString = (params || []).join(',');
                 let logErrorParams = [logInfo.username, logInfo.sql, logInfo.userIP, logInfo.purpose, result, paramString];
                 let formatQuery = mysql.format(sql, logErrorParams);
                 connection.query(formatQuery, function (logError) {
                     if (logError) {
-                        common.consoleLogError(`${logInfo.purpose}. ${result}.\nFailed to log error to database. Log error:\n${logError}.`);
+                        common.consoleLogError(`${logInfo.userIP} ${logInfo.purpose}. ${result}.\nFailed to log error to database. Log error:\n${logError}.`);
                         resolve(false);
                         return;
                     }
-                    common.consoleLog(`${logInfo.purpose}. ${result}. Action logged.`);
+                    common.consoleLog(`${logInfo.userIP} ${logInfo.purpose}. ${result}. Action logged.`);
                     resolve(true);
                 });
             });

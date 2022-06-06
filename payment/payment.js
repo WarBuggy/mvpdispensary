@@ -129,7 +129,7 @@ module.exports = function (app) {
 
     async function crossCheckDBData(itemList, productIDList, requestIp) {
         let sql = `SELECT \`product\`.\`id\`, \`product\`.\`name\`, 
-            \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\`,
+            \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\` 
             FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')})`;
         let logInfo = {
             username: 99,

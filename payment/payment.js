@@ -125,7 +125,7 @@ module.exports = function (app) {
                     errorMessage: `Price is NaN (${itemString})`,
                 };
             }
-            if (!common.priceDecimal(priceDecimal)) {
+            if (!common.isNumeric(priceDecimal)) {
                 return {
                     result: false,
                     errorCode: 5,

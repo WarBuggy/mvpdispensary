@@ -301,12 +301,6 @@ module.exports = function (app) {
 
     async function saveOrderDetailToDB(itemList, insertId, requestIp) {
         let sql = 'INSERT INTO `mvpdispensary_data`.`order_detail` (`order`, `product`, `quantity`, `price`, `price_decimal`) VALUES ';
-        let logInfo = {
-            username: 99,
-            sql,
-            userIP: requestIp,
-            purpose: 'Save order detail to db',
-        };
         let sqlAddon = [];
         let params = [];
         for (let i = 0; i < itemList.length; i++) {
@@ -315,6 +309,12 @@ module.exports = function (app) {
             params = params.concat([insertId, item.productId, item.quantity, item.price, item.priceDecimal]);
         }
         sql = sql + sqlAddon.join(', ');
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Save order detail to db',
+        };
         let result = await db.query(logInfo, params);
         if (result.resultCode != 0) {
             return {

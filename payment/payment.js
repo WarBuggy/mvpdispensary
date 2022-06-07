@@ -300,13 +300,13 @@ module.exports = function (app) {
     };
 
     async function saveOrderDetailToDB(itemList, insertId, requestIp) {
+        let sql = 'INSERT INTO `mvpdispensary_data`.`order_detail` (`order`, `product`, `quantity`, `price`, `price_decimal`) VALUES ';
         let logInfo = {
             username: 99,
             sql,
             userIP: requestIp,
             purpose: 'Save order detail to db',
         };
-        let sql = 'INSERT INTO `mvpdispensary_data`.`order_detail` (`order`, `product`, `quantity`, `price`, `price_decimal`) VALUES ';
         let sqlAddon = [];
         let params = [];
         for (let i = 0; i < itemList.length; i++) {

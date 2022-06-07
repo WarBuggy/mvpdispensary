@@ -24,7 +24,7 @@ module.exports = {
                         await logActionToDB(logInfo, 'Result OK', params);
                         let result = {
                             sqlResults: selectResult,
-                            fields: fields,
+                            fields,
                             resultCode: 0,
                         };
                         resolve(result);

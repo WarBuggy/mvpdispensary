@@ -58,6 +58,8 @@ module.exports = function (app) {
             return;
         }
 
+        let saveOrderToDBResult = saveOrderToDB(inputParams, checkCartStringResult.itemList, requestIp);
+
         let resJson = {
             success: true,
             result: 0,
@@ -169,9 +171,9 @@ module.exports = function (app) {
     };
 
     async function crossCheckDBData(itemList, productIDList, requestIp) {
-        let sql = `SELECT \`product\`.\`id\`, \`product\`.\`name\`, 
-            \`product\`.\`price\`, \`product\`.\`price_decimal\`, \`product\`.\`availability\` 
-            FROM \`mvpdispensary_data\`.\`product\` WHERE \`id\` IN (${productIDList.join(',')})`;
+        let sql = 'SELECT `product`.`id`, `product`.`name`, '
+            + '`product`.`price`, `product`.`price_decimal`, `product`.`availability` '
+            + 'FROM `mvpdispensary_data`.`product` WHERE `id` IN ' + `(${productIDList.join(',')})`;
         let logInfo = {
             username: 99,
             sql,
@@ -252,5 +254,26 @@ module.exports = function (app) {
             };
         }
         return { result: true };
+    };
+
+    async function saveOrderToDB(inputParams, itemList, requestIp) {
+        let sql = 'INSERT INTO `mvpdispensary_data`.`order` (`email`, `delivery_address`, `note`, `total`) VALUES '
+            + '(?, ?, ?, ?)';
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Save order to db',
+        };
+        let params = [inputParams.email, inputParams.deliveryAddress, inputParams.note, inputParams.total];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        console.log(result.fields);
     };
 };

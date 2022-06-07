@@ -2,7 +2,7 @@ const paymentConfig = require('./config.js');
 const common = require('../common.js');
 const systemConfig = require('../systemConfig.js');
 const db = require('../db/db.js');
-const { isNumeric } = require('../common.js');
+const axios = require('axios');
 
 module.exports = function (app) {
     //#region /api/payment/make
@@ -78,6 +78,7 @@ module.exports = function (app) {
             return;
         }
 
+        let checkNPGStatusResult = await checkNPGStatus();
 
         let resJson = {
             success: true,
@@ -89,7 +90,6 @@ module.exports = function (app) {
     });
 
     function checkInputParam(inputParams) {
-
         if (!common.validateEmail(inputParams.email)) {
             return {
                 result: false,
@@ -324,5 +324,25 @@ module.exports = function (app) {
             };
         }
         return { result: true };
+    };
+
+    // NPG: nowspayment gateway
+    async function checkNPGStatus() {
+        let config = {
+            method: 'get',
+            url: 'https://api.nowpayments.io/v1/status',
+            headers: {},
+        };
+        try {
+            let result = axios(config);
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `${error}`,
+            };
+        }
     };
 };

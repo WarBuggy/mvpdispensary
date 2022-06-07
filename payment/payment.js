@@ -79,6 +79,13 @@ module.exports = function (app) {
         }
 
         let checkNPGStatusResult = await checkNPGStatus();
+        if (!checkNPGStatusResult.result) {
+            let errorCode = 660 + checkNPGStatusResult.errorCode;
+            common.consoleLogError(`${errorString} ${checkNPGStatusResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Lỗi trong việc xác định tình trạng của NPG' });
+            return;
+        }
 
         let resJson = {
             success: true,
@@ -341,14 +348,13 @@ module.exports = function (app) {
             return {
                 result: false,
                 errorCode: 0,
-                errorMessage: `Cannot check NPG status`,
+                errorMessage: `NPG is not online`,
             };
         } catch (error) {
-            console.log(error);
             return {
                 result: false,
                 errorCode: 1,
-                errorMessage: `Failed to check NPG status: ${error}`,
+                errorMessage: `Failed to check NPG status: ${error.message}`,
             };
         }
     };

@@ -13,40 +13,20 @@ module.exports = function (app) {
         let errorString = `${requestIp} Error when ${purpose}:`;
         common.consoleLog(`${requestIp} requested to ${purpose}.`);
 
+        let inputParams = {
+            email: (request.body.email || '').trim(),
+            deliveryAddress: (request.body.deliveryAddress || '').trim(),
+            note: (request.body.note || '').trim(),
+            total: request.body.total || '',
+        }
         let cartString = (request.body.cartString || '').trim();
-        let email = (request.body.email || '').trim();
-        let deliveryAddress = (request.body.deliveryAddress || '').trim();
-        let note = (request.body.note || '').trim();
-        let total = request.body.total || '';
 
-        console.log(`cartString: ${cartString}`);
-        console.log(`email: ${email}`);
-        console.log(`deliveryAddress: ${deliveryAddress}`);
-        console.log(`note: ${note}`);
-        console.log(`total: ${total}`);
-
-
-        if (!common.validateEmail(email)) {
-            let errorCode = 600;
-            common.consoleLogError(`${errorString} Email is not valid (${email}).`);
+        let checkInputParamResult = checkInputParam(inputParams);
+        if (!checkInputParamResult.result) {
+            let errorCode = 600 + checkInputParamResult.errorCode;
+            common.consoleLogError(`${errorString} ${checkInputParamResult.errorMessage}.`);
             response.status(errorCode);
-            response.json({ success: false, message: 'Email không hợp lệ' });
-            return;
-        }
-
-        if (deliveryAddress == '') {
-            let errorCode = 601;
-            common.consoleLogError(`${errorString} Missing delivery address.`);
-            response.status(errorCode);
-            response.json({ success: false, message: 'Không tìm thấy địa chỉ gửi hàng' });
-            return;
-        }
-
-        if (!common.isNumeric(total)) {
-            let errorCode = 602;
-            common.consoleLogError(`${errorString} Total is not a number (${total}).`);
-            response.status(errorCode);
-            response.json({ success: false, message: 'Tổng số tiền không phải là một con số' });
+            response.json({ success: false, message: 'Dữ liệu nhận được không hợp lệ' });
             return;
         }
 
@@ -67,7 +47,16 @@ module.exports = function (app) {
             response.status(errorCode);
             response.json({ success: false, message: 'Thông tin sản phẩm đặt mua nhận được không hợp lệ' });
             return;
-        } 1
+        }
+
+        let crossCheckPriceTotalResult = crossCheckPriceTotal(checkCartStringResult.itemList, inputParams.total);
+        if (!crossCheckPriceTotalResult.result) {
+            let errorCode = 630 + crossCheckPriceTotalResult.errorCode;
+            common.consoleLogError(`${errorString} ${crossCheckPriceTotalResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Tổng giá tiền phải trả không đúng' });
+            return;
+        }
 
         let resJson = {
             success: true,
@@ -77,6 +66,34 @@ module.exports = function (app) {
         response.json(resJson);
         common.consoleLog(`${requestIp} Request for ${purpose} was successfully handled.`);
     });
+
+    function checkInputParam(inputParams) {
+
+        if (!common.validateEmail(inputParams.email)) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: 'Email is not valid',
+            };
+        }
+
+        if (inputParams.deliveryAddress == '') {
+            return {
+                result: false,
+                errorCode: 1,
+                errorMessage: 'Missing delivery address',
+            };
+        }
+
+        if (!common.isNumeric(inputParams.total)) {
+            return {
+                result: false,
+                errorCode: 2,
+                errorMessage: `Total is not a number (${inputParams.total})`,
+            };
+        }
+        return { result: true, };
+    };
 
     function checkCartString(cartString) {
         if (cartString == '') {
@@ -218,5 +235,22 @@ module.exports = function (app) {
             }
         }
         return { result: true };
-    }
+    };
+
+    function crossCheckPriceTotal(itemList, inputTotal) {
+        let total = 0;
+        for (let i = 0; i < itemList.length; i++) {
+            let item = itemList[i];
+            let batchTotal = item.quantity * (item.price + '.' + item.priceDecimal);
+            total = total + batchTotal;
+        }
+        if (inputTotal != total) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Input total price is not correct ($${inputTotal} vs ${total})`,
+            };
+        }
+        return { result: true };
+    };
 };

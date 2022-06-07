@@ -334,14 +334,21 @@ module.exports = function (app) {
             headers: {},
         };
         try {
-            let result = axios(config);
-            console.log(result);
+            let result = await axios(config);
+            if ((result.data || {}).message == 'OK') {
+                return { result: true };
+            }
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Cannot check NPG status`,
+            };
         } catch (error) {
             console.log(error);
             return {
                 result: false,
-                errorCode: 0,
-                errorMessage: `${error}`,
+                errorCode: 1,
+                errorMessage: `Failed to check NPG status: ${error}`,
             };
         }
     };

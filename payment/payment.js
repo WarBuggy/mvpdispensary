@@ -59,7 +59,7 @@ module.exports = function (app) {
             return;
         }
 
-        let saveOrderToDBResult = saveOrderToDB(inputParams, requestIp);
+        let saveOrderToDBResult = await saveOrderToDB(inputParams, requestIp);
         if (!saveOrderToDBResult.result) {
             let errorCode = 640 + saveOrderToDBResult.errorCode;
             common.consoleLogError(`${errorString} ${saveOrderToDBResult.errorMessage}.`);
@@ -69,7 +69,7 @@ module.exports = function (app) {
         }
 
         let orderId = saveOrderToDBResult.insertId;
-        let saveOrderDetailToDBResult = saveOrderDetailToDB(itemList, orderId, requestIp);
+        let saveOrderDetailToDBResult = await saveOrderDetailToDB(itemList, orderId, requestIp);
         if (!saveOrderDetailToDBResult.result) {
             let errorCode = 650 + saveOrderDetailToDBResult.errorCode;
             common.consoleLogError(`${errorString} ${saveOrderDetailToDBResult.errorMessage}.`);

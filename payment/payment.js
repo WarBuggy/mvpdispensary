@@ -39,8 +39,9 @@ module.exports = function (app) {
             return;
         }
 
+        let itemList = checkCartStringResult.itemList;
         let crossCheckDBDataResult =
-            await crossCheckDBData(checkCartStringResult.itemList, checkCartStringResult.productIDList, requestIp);
+            await crossCheckDBData(itemList, checkCartStringResult.productIDList, requestIp);
         if (!crossCheckDBDataResult.result) {
             let errorCode = 620 + crossCheckDBDataResult.errorCode;
             common.consoleLogError(`${errorString} ${crossCheckDBDataResult.errorMessage}.`);
@@ -49,7 +50,7 @@ module.exports = function (app) {
             return;
         }
 
-        let crossCheckPriceTotalResult = crossCheckPriceTotal(checkCartStringResult.itemList, inputParams.total);
+        let crossCheckPriceTotalResult = crossCheckPriceTotal(itemList, inputParams.total);
         if (!crossCheckPriceTotalResult.result) {
             let errorCode = 630 + crossCheckPriceTotalResult.errorCode;
             common.consoleLogError(`${errorString} ${crossCheckPriceTotalResult.errorMessage}.`);
@@ -58,7 +59,25 @@ module.exports = function (app) {
             return;
         }
 
-        let saveOrderToDBResult = saveOrderToDB(inputParams, checkCartStringResult.itemList, requestIp);
+        let saveOrderToDBResult = saveOrderToDB(inputParams, requestIp);
+        if (!saveOrderToDBResult.result) {
+            let errorCode = 640 + saveOrderToDBResult.errorCode;
+            common.consoleLogError(`${errorString} ${saveOrderToDBResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Lỗi trong việc lưu đơn đặt hàng' });
+            return;
+        }
+
+        let orderId = saveOrderToDBResult.insertId;
+        let saveOrderDetailToDBResult = saveOrderDetailToDB(itemList, orderId, requestIp);
+        if (!saveOrderDetailToDBResult.result) {
+            let errorCode = 650 + saveOrderDetailToDBResult.errorCode;
+            common.consoleLogError(`${errorString} ${saveOrderDetailToDBResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Lỗi trong việc lưu chi tiết đơn đặt hàng' });
+            return;
+        }
+
 
         let resJson = {
             success: true,
@@ -256,7 +275,7 @@ module.exports = function (app) {
         return { result: true };
     };
 
-    async function saveOrderToDB(inputParams, itemList, requestIp) {
+    async function saveOrderToDB(inputParams, requestIp) {
         let sql = 'INSERT INTO `mvpdispensary_data`.`order` (`email`, `delivery_address`, `note`, `total`) VALUES '
             + '(?, ?, ?, ?)';
         let logInfo = {
@@ -265,6 +284,7 @@ module.exports = function (app) {
             userIP: requestIp,
             purpose: 'Save order to db',
         };
+
         let params = [inputParams.email, inputParams.deliveryAddress, inputParams.note, inputParams.total];
         let result = await db.query(logInfo, params);
         if (result.resultCode != 0) {
@@ -274,6 +294,35 @@ module.exports = function (app) {
                 errorMessage: `Database error`,
             };
         }
-        console.log(result.fields);
+
+        let insertId = result.sqlResults.insertId;
+        return { result: true, insertId };
+    };
+
+    async function saveOrderDetailToDB(itemList, insertId, requestIp) {
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Save order detail to db',
+        };
+        let sql = 'INSERT INTO `mvpdispensary_data`.`order_detail` (`order`, `product`, `quantity`, `price`, `price_decimal`) VALUES ';
+        let sqlAddon = [];
+        let params = [];
+        for (let i = 0; i < itemList.length; i++) {
+            let item = itemList[i];
+            sqlAddon.push('(?, ?, ?, ?, ?)');
+            params = params.concat([insertId, item.productId, item.quantity, item.price, item.priceDecimal]);
+        }
+        sql = sql + sqlAddon.join(', ');
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        return { result: true };
     };
 };

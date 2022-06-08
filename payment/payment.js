@@ -84,6 +84,7 @@ module.exports = function (app) {
             common.consoleLogError(`${errorString} ${checkNPGStatusResult.errorMessage}.`);
             response.status(errorCode);
             response.json({ success: false, message: 'Lỗi trong việc xác định tình trạng của NPG' });
+            await updateOrderStatus(orderId, 1, requestIp);
             return;
         }
 
@@ -356,6 +357,22 @@ module.exports = function (app) {
                 errorCode: 1,
                 errorMessage: `Failed to check NPG status: ${error.message}`,
             };
+        }
+    };
+
+    async function updateOrderStatus(orderId, status, requestIp) {
+        let sql = 'UPDATE `mvpdispensary_data`.`order` SET `status` = ? WHERE `id` = ?';
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: `Update order ${orderId} to status ${status}`,
+        };
+
+        let params = [orderId, status];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            common.consoleLogError(`${requestIp} Failed to update order ${orderId} to status ${status}.`);
         }
     };
 };

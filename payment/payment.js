@@ -398,16 +398,16 @@ module.exports = function (app) {
             price_currency: 'usd',
             order_id: orderId,
             order_description: invoiceDescription,
-            ipn_callback_url: paymentConfig.ipn_callback_url,
-            success_url: paymentConfig.success_url,
-            cancel_url: paymentConfig.cancel_url,
+            ipn_callback_url: paymentConfig.nowspayment.ipn_callback_url,
+            success_url: paymentConfig.nowspayment.success_url,
+            cancel_url: paymentConfig.nowspayment.cancel_url,
         });
 
         let config = {
             method: 'post',
             url: 'https://api.nowpayments.io/v1/invoice',
             headers: {
-                'x-api-key': paymentConfig.apiKey,
+                'x-api-key': paymentConfig.nowspayment.apiKey,
                 'Content-Type': 'application/json'
             },
             data: data

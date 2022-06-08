@@ -3,7 +3,7 @@ window.createOrder = async function () {
         email: 'tester@zacbdefz.com',
         deliveryAddress: '233 Acbfkfe St, ACBDEF, EKLMN, VIM',
         note: 'Xin giao hàng vào lúc tối. Gọi số 0xxx xxx xxx để nhận hàng',
-        total: 300,
+        total: 4,
         cartString: '4;1;4;0',
     };
     try {

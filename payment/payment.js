@@ -84,18 +84,40 @@ module.exports = function (app) {
             common.consoleLogError(`${errorString} ${checkNPGStatusResult.errorMessage}.`);
             response.status(errorCode);
             response.json({ success: false, message: 'Lỗi trong việc xác định tình trạng của NPG' });
-            await updateOrderStatus(orderId, 1, requestIp);
             return;
         }
 
         let createNPGInvoiceResult = await createNPGInvoice(orderId, itemList, inputParams.total);
+        if (!createNPGInvoiceResult.result) {
+            let errorCode = 670 + createNPGInvoiceResult.errorCode;
+            common.consoleLogError(`${errorString} ${createNPGInvoiceResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Lỗi trong việc tạo ra hóa đơn thu tiền' });
+            await updateOrderStatus(orderId, 2, requestIp);
+            return;
+        }
 
-        let resJson = {
-            success: true,
-            result: 0,
-            url: 'mvpdispensary.com',
-        };
-        response.json(resJson);
+        let invoiceLink = createNPGInvoiceResult.invoiceLink;
+        let saveNPGInvoiceToDBResult =
+            saveNPGInvoiceToDB(createNPGInvoiceResult.invoiceId,
+                createNPGInvoiceResult.invoiceToken, orderId, invoiceLink, requestIp);
+        if (!saveNPGInvoiceToDBResult.result) {
+            let errorCode = 680 + saveNPGInvoiceToDBResult.errorCode;
+            common.consoleLogError(`${errorString} ${saveNPGInvoiceToDBResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Lỗi trong việc lưu dữ liệu hóa đơn thu tiền' });
+            await updateOrderStatus(orderId, 2, requestIp);
+            return;
+        }
+
+        // let resJson = {
+        //     success: true,
+        //     result: 0,
+        //     invoiceLink,
+        // };
+        // response.json(resJson);
+        response.redirect(invoiceLink);
+        await updateOrderStatus(orderId, 1, requestIp);
         common.consoleLog(`${requestIp} Request for ${purpose} was successfully handled.`);
     });
 
@@ -401,6 +423,7 @@ module.exports = function (app) {
             ipn_callback_url: paymentConfig.nowspayment.ipn_callback_url,
             success_url: paymentConfig.nowspayment.success_url,
             cancel_url: paymentConfig.nowspayment.cancel_url,
+            partially_paid_url: paymentConfig.nowspayment.partially_paid_url,
         });
 
         let config = {
@@ -414,10 +437,38 @@ module.exports = function (app) {
         };
 
         try {
-            let result = axios(config);
-            console.log(result);
+            let result = await axios(config);
+            let invoiceId = result.data.id;
+            let invoiceToken = result.data.token_id;
+            let invoiceLink = result.data.invoice_url;
+            return { result: true, invoiceId, invoiceToken, invoiceLink, };
         } catch (error) {
-            console.log(error.message);
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Failed to generate invoice: ${error.message}`,
+            };
         }
+    };
+
+    async function saveNPGInvoiceToDB(invoiceId, invoiceToken, orderId, invoiceLink, requestIp) {
+        let sql = 'INSERT INTO `mvpdispensary_data`.`invoice_npg` (`id`, `token`, `order`, `link`) '
+            + 'VALUES (?, ?, ?, ?)';
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Save NPG invoice to db',
+        };
+        let params = [invoiceId, invoiceToken, orderId, invoiceLink];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        return { result: true };
     };
 };

@@ -7,7 +7,7 @@ window.createOrder = async function () {
         cartString: '2;2;60;0|||2;3;60;0',
     };
     try {
-        let response = await Common.sendToBackend('/payment/make', sendData);
+        let response = await Common.sendToBackend('payment/make', sendData);
         console.log(response);
     } catch (error) {
         console.log(error);

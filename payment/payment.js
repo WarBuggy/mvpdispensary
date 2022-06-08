@@ -116,6 +116,7 @@ module.exports = function (app) {
         //     invoiceLink,
         // };
         // response.json(resJson);
+        response.header("Access-Control-Allow-Origin", "*");
         response.redirect(invoiceLink);
         await updateOrderStatus(orderId, 1, requestIp);
         common.consoleLog(`${requestIp} Request for ${purpose} was successfully handled.`);

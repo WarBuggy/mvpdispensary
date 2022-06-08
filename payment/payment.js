@@ -88,6 +88,8 @@ module.exports = function (app) {
             return;
         }
 
+        let createNPGInvoiceResult = await createNPGInvoice(orderId, itemList, inputParams.total);
+
         let resJson = {
             success: true,
             result: 0,
@@ -221,6 +223,7 @@ module.exports = function (app) {
             let matchId = false;
             let dbPrice = 0;
             let dbPriceDecimal = 0;
+            let dbName = '';
             let availability = 0;
             for (let j = 0; j < dbItemList.length; j++) {
                 let dbItem = dbItemList[j];
@@ -231,6 +234,7 @@ module.exports = function (app) {
                 matchId = true;
                 dbPrice = dbItem.price;
                 dbPriceDecimal = dbItem.price_decimal;
+                dbName = dbItem.name;
                 availability = dbItem.availability;
                 break;
             }
@@ -262,6 +266,7 @@ module.exports = function (app) {
                     errorMessage: `Product with id ${item.productId} is no long available`,
                 };
             }
+            item.name = dbName;
         }
         return { result: true };
     };
@@ -373,6 +378,46 @@ module.exports = function (app) {
         let result = await db.query(logInfo, params);
         if (result.resultCode != 0) {
             common.consoleLogError(`${requestIp} Failed to update order ${orderId} to status ${status}.`);
+        }
+    };
+
+    function createInvoiceDescription(itemList) {
+        let parts = [];
+        for (let i = 0; i < itemList.length; i++) {
+            let item = itemList[i];
+            let string = `${item.name} x ${item.quantity}`;
+            parts.push(string);
+        }
+        return parts.join('; ');
+    };
+
+    async function createNPGInvoice(orderId, itemList, total) {
+        let invoiceDescription = createInvoiceDescription(itemList);
+        let data = JSON.stringify({
+            price_amount: total,
+            price_currency: 'usd',
+            order_id: orderId,
+            order_description: invoiceDescription,
+            ipn_callback_url: paymentConfig.ipn_callback_url,
+            success_url: paymentConfig.success_url,
+            cancel_url: paymentConfig.cancel_url,
+        });
+
+        let config = {
+            method: 'post',
+            url: 'https://api.nowpayments.io/v1/invoice',
+            headers: {
+                'x-api-key': paymentConfig.apiKey,
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        try {
+            let result = axios(config);
+            console.log(result);
+        } catch (error) {
+            console.log(error.message);
         }
     };
 };

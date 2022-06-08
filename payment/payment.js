@@ -110,14 +110,12 @@ module.exports = function (app) {
             return;
         }
 
-        // let resJson = {
-        //     success: true,
-        //     result: 0,
-        //     invoiceLink,
-        // };
-        // response.json(resJson);
-        response.header("Access-Control-Allow-Origin", "*");
-        response.redirect(invoiceLink);
+        let resJson = {
+            success: true,
+            result: 0,
+            invoiceLink,
+        };
+        response.json(resJson);
         await updateOrderStatus(orderId, 1, requestIp);
         common.consoleLog(`${requestIp} Request for ${purpose} was successfully handled.`);
     });

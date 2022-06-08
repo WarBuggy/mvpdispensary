@@ -8,7 +8,7 @@ window.createOrder = async function () {
     };
     try {
         let response = await Common.sendToBackend('payment/make', sendData);
-        console.log(response);
+        window.location.href = response.invoiceLink;
     } catch (error) {
         console.log(error);
     }

@@ -9,7 +9,7 @@ module.exports = function (app) {
     //a request payment is made
     app.post('/payment/make', async function (request, response) {
         let requestIp = common.getReadableIP(request);
-        let purpose = 'make a payment';
+        let purpose = 'processing an order';
         let errorString = `${requestIp} Error when ${purpose}:`;
         common.consoleLog(`${requestIp} requested to ${purpose}.`);
 
@@ -98,7 +98,7 @@ module.exports = function (app) {
         }
 
         let invoiceLink = createNPGInvoiceResult.invoiceLink;
-        let saveNPGInvoiceToDBResult =
+        let saveNPGInvoiceToDBResult = await
             saveNPGInvoiceToDB(createNPGInvoiceResult.invoiceId,
                 createNPGInvoiceResult.invoiceToken, orderId, invoiceLink, requestIp);
         if (!saveNPGInvoiceToDBResult.result) {

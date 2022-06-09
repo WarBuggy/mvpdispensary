@@ -1,9 +1,9 @@
 const paymentConfig = require('./config.js');
 const common = require('../common.js');
-const systemConfig = require('../systemConfig.js');
 const db = require('../db/db.js');
 const axios = require('axios');
 const crypto = require('crypto');
+const mailer = require('../mailer/mailer.js');
 
 module.exports = function (app) {
     //#region /payment/make
@@ -520,10 +520,15 @@ module.exports = function (app) {
                 common.consoleLogError(`${errorString} ${getOrderDetailFromDbResult.errorMessage}.`);
                 return;
             }
-            console.log(getOrderDetailFromDbResult.orderInfo);
+            params.customerEmail = getOrderDetailFromDbResult.orderInfo.email;
+            params.deliveryAddress = getOrderDetailFromDbResult.orderInfo.delivery_address;
+            params.note = getOrderDetailFromDbResult.orderInfo.note;
+            params.orderTotal = getOrderDetailFromDbResult.orderInfo.total;
+            if (params.status == 'partially_paid') {
+                return;
+            }
+
         }
-
-
         common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
     });
 
@@ -538,7 +543,7 @@ module.exports = function (app) {
         return { result: true };
     };
 
-    async function updateInvoiceDetails(params, requestIp) {
+    async function updateInvoiceDetails(invoiceObject, requestIp) {
         let sql = 'UPDATE `mvpdispensary_data`.`invoice_npg` SET ' +
             '`updated_at` = NOW(), ' +
             '`payment_id` = ?, ' +
@@ -558,6 +563,10 @@ module.exports = function (app) {
             userIP: requestIp,
             purpose: 'Update NPG invoice',
         };
+        let params = [];
+        for (const key in invoiceObject) {
+            params.push(invoiceObject[key]);
+        }
         let result = await db.query(logInfo, params);
         if (result.resultCode != 0) {
             return {

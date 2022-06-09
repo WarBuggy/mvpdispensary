@@ -8,8 +8,9 @@ dayjs.extend(dayjsCustomParseFormat);
 let transporter = null;
 
 module.exports = {
-    sendPartiallyPaidEmail: function (params) {
-        let content = 'There is an invoice that was partially paid. The required amount ';
+    sendPartiallyPaidNotifEmail: function (params) {
+        let content = `Hello MVP Shop admin,<br>There is an invoice that was partially paid.<br>`
+            + `The total of the order is <b>${params.orderTotal}</b>.`;
     },
 };
 

@@ -3,6 +3,7 @@ const common = require('../common.js');
 const systemConfig = require('../systemConfig.js');
 const db = require('../db/db.js');
 const axios = require('axios');
+const crypto = require('crypto');
 
 module.exports = function (app) {
     //#region /payment/make
@@ -516,6 +517,7 @@ module.exports = function (app) {
             common.consoleLogError(`${errorString} ${updateInvoiceDetailsResult.errorMessage}.`);
             return;
         }
+
         common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
     });
 
@@ -548,6 +550,14 @@ module.exports = function (app) {
             };
         }
         return { result: true };
+    };
+
+    function sendEmailToShop(params) {
+        let paymentStatus = 'successfully paid'
+        if (params.status == 'finished') {
+
+        }
+        let content = 'There is an invoice that was  '
     };
     //#endregion
 };

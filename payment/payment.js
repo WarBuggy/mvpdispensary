@@ -505,8 +505,8 @@ module.exports = function (app) {
             purchaseId: request.body.purchase_id,
             outcomeAmount: request.body.outcome_amount,
             outcomeCurrency: request.body.outcome_currency,
-            invoiceId: request.body.invoice_id,
-            orderId: request.body.order_id,
+            invoiceId: request.body.invoice_id.toString(),
+            orderId: parseInt(request.body.order_id),
         };
         let updateInvoiceDetailsResult = await updateInvoiceDetails(params, requestIp);
         if (!updateInvoiceDetailsResult.result) {
@@ -555,7 +555,7 @@ module.exports = function (app) {
             '`order_description` = ?, ' +
             '`purchase_id` = ?, ' +
             '`outcome_amount` = ?, ' +
-            '`outcome_currency` = ?, ' +
+            '`outcome_currency` = ? ' +
             'WHERE `id` = ? AND `order` = ?';
         let logInfo = {
             username: 99,

@@ -1,6 +1,6 @@
 const mailerConfig = require('./config.js');
 const nodemailer = require('nodemailer');
-const common = require('../common/common.js');
+const common = require('../common.js');
 const dayjs = require('dayjs');
 const dayjsCustomParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(dayjsCustomParseFormat);

@@ -19,6 +19,7 @@ module.exports = function (app) {
             deliveryAddress: (request.body.deliveryAddress || '').trim(),
             note: (request.body.note || '').trim(),
             total: request.body.total || '',
+            name: (request.body.name || '').trim(),
         }
         let cartString = (request.body.cartString || '').trim();
 
@@ -143,6 +144,13 @@ module.exports = function (app) {
                 result: false,
                 errorCode: 2,
                 errorMessage: `Total is not a number (${inputParams.total})`,
+            };
+        }
+        if (inputParams.name == '') {
+            return {
+                result: false,
+                errorCode: 3,
+                errorMessage: 'Missing customer name',
             };
         }
         return { result: true, };
@@ -311,8 +319,8 @@ module.exports = function (app) {
     };
 
     async function saveOrderToDB(inputParams, requestIp) {
-        let sql = 'INSERT INTO `mvpdispensary_data`.`order` (`email`, `delivery_address`, `note`, `total`) VALUES '
-            + '(?, ?, ?, ?)';
+        let sql = 'INSERT INTO `mvpdispensary_data`.`order` (`email`, `delivery_address`, `note`, `total`, `name`) VALUES '
+            + '(?, ?, ?, ?, ?)';
         let logInfo = {
             username: 99,
             sql,
@@ -320,7 +328,7 @@ module.exports = function (app) {
             purpose: 'Save order to db',
         };
 
-        let params = [inputParams.email, inputParams.deliveryAddress, inputParams.note, inputParams.total];
+        let params = [inputParams.email, inputParams.deliveryAddress, inputParams.note, inputParams.total, inputParams.name];
         let result = await db.query(logInfo, params);
         if (result.resultCode != 0) {
             return {
@@ -396,7 +404,7 @@ module.exports = function (app) {
             purpose: `Update order ${orderId} to status ${status}`,
         };
 
-        let params = [orderId, status];
+        let params = [status, orderId];
         let result = await db.query(logInfo, params);
         if (result.resultCode != 0) {
             common.consoleLogError(`${requestIp} Failed to update order ${orderId} to status ${status}.`);
@@ -524,6 +532,7 @@ module.exports = function (app) {
             params.deliveryAddress = getOrderDetailFromDbResult.orderInfo.delivery_address;
             params.note = getOrderDetailFromDbResult.orderInfo.note;
             params.orderTotal = getOrderDetailFromDbResult.orderInfo.total;
+            params.customerName = getOrderDetailFromDbResult.orderInfo.name;
             if (params.status == 'partially_paid') {
                 return;
             }
@@ -579,7 +588,7 @@ module.exports = function (app) {
     };
 
     async function getOrderDetailFromDb(orderId) {
-        let sql = 'SELECT `order`.`email`, `order`.`delivery_address`, `order`.`note`, `order`.`total` '
+        let sql = 'SELECT `order`.`email`, `order`.`delivery_address`, `order`.`note`, `order`.`total`, `order`.`name` '
         'FROM `mvpdispensary_data`.`order` WHERE `order`.`id` = ?';
         let logInfo = {
             username: 99,

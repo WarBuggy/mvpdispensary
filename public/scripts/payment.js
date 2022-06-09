@@ -5,6 +5,7 @@ window.createOrder = async function () {
         note: 'Xin giao hàng vào lúc tối. Gọi số 0xxx xxx xxx để nhận hàng',
         total: 4,
         cartString: '4;1;4;0',
+        name: 'Tester',
     };
     try {
         let response = await Common.sendToBackend('payment/make', sendData);

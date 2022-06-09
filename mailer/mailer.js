@@ -8,37 +8,8 @@ dayjs.extend(dayjsCustomParseFormat);
 let transporter = null;
 
 module.exports = {
-    sendMail: function (content, isHtml, receivers, subject, purpose) {
-        if (receivers == null) {
-            receivers = mailerConfig.adminEmail;
-        }
-        let transporter = getTransporter();
-        let mailInfo = {
-            from: mailerConfig.sender + '<' + mailerConfig.sendFrom + '>',
-            to: receivers,
-            subject: subject,
-        };
-        if (isHtml === true) {
-            mailInfo.html = content;
-        } else {
-            mailInfo.text = content;
-        }
-        common.consoleLog('Sending ' + purpose + ' email...');
-        transporter.sendMail(mailInfo)
-            .then(function () {
-                common.consoleLog('Email for ' + purpose + ' sent.');
-            })
-            .catch(function (error) {
-                let errorMessage = 'Unknown error';
-                if (error.errno) {
-                    errorMessage = error.errno;
-                } else if (error.code) {
-                    errorMessage = error.code;
-                } else if (error.message) {
-                    errorMessage = error.message;
-                }
-                common.consoleLogError('Email for ' + purpose + ' could not be sent. Error: ' + errorMessage + '.');
-            });
+    sendPartiallyPaidEmail: function (params) {
+        let content = 'There is an invoice that was partially paid. The required amount ';
     },
 };
 
@@ -59,4 +30,37 @@ function getTransporter() {
         transporter = createTransporter();
     }
     return transporter;
+};
+
+function sendMail(content, isHtml, receivers, subject, purpose) {
+    if (receivers == null) {
+        receivers = mailerConfig.adminEmail;
+    }
+    let transporter = getTransporter();
+    let mailInfo = {
+        from: mailerConfig.sender + '<' + mailerConfig.sendFrom + '>',
+        to: receivers,
+        subject: subject,
+    };
+    if (isHtml === true) {
+        mailInfo.html = content;
+    } else {
+        mailInfo.text = content;
+    }
+    common.consoleLog('Sending ' + purpose + ' email...');
+    transporter.sendMail(mailInfo)
+        .then(function () {
+            common.consoleLog('Email for ' + purpose + ' sent.');
+        })
+        .catch(function (error) {
+            let errorMessage = 'Unknown error';
+            if (error.errno) {
+                errorMessage = error.errno;
+            } else if (error.code) {
+                errorMessage = error.code;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            common.consoleLogError('Email for ' + purpose + ' could not be sent. Error: ' + errorMessage + '.');
+        });
 };

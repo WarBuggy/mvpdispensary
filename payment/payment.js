@@ -481,11 +481,7 @@ module.exports = function (app) {
         let errorString = `${requestIp} Error when ${purpose}:`;
         common.consoleLog(`${requestIp} requested to ${purpose}.`);
 
-        let receiverSignature = request.headers['x-nowpayments-sig'];
-        const hmac = crypto.createHmac('sha512', paymentConfig.ipn);
-        hmac.update(JSON.stringify(request.body, Object.keys(request.body).sort()));
-        const signature = hmac.digest('hex');
-        if (receiverSignature != signature) {
+        if (!compareIPNSignature(request)) {
             let errorCode = 600;
             common.consoleLogError(`${errorString} Signatures do not match.`);
             response.status(errorCode);
@@ -518,8 +514,29 @@ module.exports = function (app) {
             return;
         }
 
+        if (params.status == 'finished' || params.status == 'partially_paid') {
+            let getOrderDetailFromDbResult = await getOrderDetailFromDb(params.orderId);
+            if (!getOrderDetailFromDbResult.result) {
+                common.consoleLogError(`${errorString} ${getOrderDetailFromDbResult.errorMessage}.`);
+                return;
+            }
+            console.log(getOrderDetailFromDbResult.orderInfo);
+        }
+
+
         common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
     });
+
+    function compareIPNSignature(request) {
+        let receiverSignature = request.headers['x-nowpayments-sig'];
+        const hmac = crypto.createHmac('sha512', paymentConfig.ipn);
+        hmac.update(JSON.stringify(request.body, Object.keys(request.body).sort()));
+        const signature = hmac.digest('hex');
+        if (receiverSignature != signature) {
+            return { result: false, };
+        }
+        return { result: true };
+    };
 
     async function updateInvoiceDetails(params, requestIp) {
         let sql = 'UPDATE `mvpdispensary_data`.`invoice_npg` SET ' +
@@ -552,12 +569,25 @@ module.exports = function (app) {
         return { result: true };
     };
 
-    function sendEmailToShop(params) {
-        let paymentStatus = 'successfully paid'
-        if (params.status == 'finished') {
-
+    async function getOrderDetailFromDb(orderId) {
+        let sql = 'SELECT `order`.`email`, `order`.`delivery_address`, `order`.`note`, `order`.`total` '
+        'FROM `mvpdispensary_data`.`order` WHERE `order`.`id` = ?';
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Get order detail from db',
+        };
+        let params = [orderId];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
         }
-        let content = 'There is an invoice that was  '
+        return { result: true, orderInfo: result.sqlResults, };
     };
     //#endregion
 };

@@ -5,7 +5,7 @@ const db = require('../db/db.js');
 const axios = require('axios');
 
 module.exports = function (app) {
-    //#region /api/payment/make
+    //#region /payment/make
     //a request payment is made
     app.post('/payment/make', async function (request, response) {
         let requestIp = common.getReadableIP(request);
@@ -117,7 +117,7 @@ module.exports = function (app) {
         };
         response.json(resJson);
         await updateOrderStatus(orderId, 1, requestIp);
-        common.consoleLog(`${requestIp} Request for ${purpose} was successfully handled.`);
+        common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
     });
 
     function checkInputParam(inputParams) {
@@ -470,4 +470,84 @@ module.exports = function (app) {
         }
         return { result: true };
     };
+    //#endregion
+
+    //#region /invoice/update
+    // webhook to listen to NPG invoice updates
+    app.post('/invoice/update', async function (request, response) {
+        let requestIp = common.getReadableIP(request);
+        let purpose = 'process an invoice status update from NPG';
+        let errorString = `${requestIp} Error when ${purpose}:`;
+        common.consoleLog(`${requestIp} requested to ${purpose}.`);
+
+        let receiverSignature = request.headers['x-nowpayments-sig'];
+        const hmac = crypto.createHmac('sha512', paymentConfig.ipn);
+        hmac.update(JSON.stringify(request.body, Object.keys(request.body).sort()));
+        const signature = hmac.digest('hex');
+        if (receiverSignature != signature) {
+            let errorCode = 600;
+            common.consoleLogError(`${errorString} Signatures do not match.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Signatures do not match.' });
+            return;
+        }
+        let resJson = {
+            success: true,
+            message: 'Update received. Thank you!',
+        };
+        response.json(resJson);
+
+        let params = {
+            paymentId: request.body.payment_id,
+            paymentStatus: request.body.payment_status,
+            payAddress: request.body.pay_address,
+            payAmount: request.body.pay_amount,
+            actuallyPaidAmount: request.body.actually_paid,
+            paidCurrency: request.body.pay_currency,
+            orderDescription: request.body.order_description,
+            purchaseId: request.body.purchase_id,
+            outcomeAmount: request.body.outcome_amount,
+            outcomeCurrency: request.body.outcome_currency,
+            invoiceId: request.body.invoice_id,
+            orderId: request.body.order_id,
+        };
+        let updateInvoiceDetailsResult = await updateInvoiceDetails(params, requestIp);
+        if (!updateInvoiceDetailsResult.result) {
+            common.consoleLogError(`${errorString} ${updateInvoiceDetailsResult.errorMessage}.`);
+            return;
+        }
+        common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
+    });
+
+    async function updateInvoiceDetails(params, requestIp) {
+        let sql = 'UPDATE `mvpdispensary_data`.`invoice_npg` SET ' +
+            '`updated_at` = NOW(), ' +
+            '`payment_id` = ?, ' +
+            '`status` = ?, ' +
+            '`pay_address` = ?, ' +
+            '`pay_amount` = ?, ' +
+            '`actually_paid` = ?, ' +
+            '`pay_currency` = ?, ' +
+            '`order_description` = ?, ' +
+            '`purchase_id` = ?, ' +
+            '`outcome_amount` = ?, ' +
+            '`outcome_currency` = ?, ' +
+            'WHERE `id` = ? AND `order` = ?';
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Update NPG invoice',
+        };
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        return { result: true };
+    };
+    //#endregion
 };

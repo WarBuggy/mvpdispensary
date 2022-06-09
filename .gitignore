@@ -1,6 +1,7 @@
 # database config file
 db/config.js
 payment/config.js
+mailer/config.js
 backendURL.js
 
 

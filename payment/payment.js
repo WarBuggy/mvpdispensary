@@ -481,7 +481,7 @@ module.exports = function (app) {
         let errorString = `${requestIp} Error when ${purpose}:`;
         common.consoleLog(`${requestIp} requested to ${purpose}.`);
 
-        if (!compareIPNSignature(request)) {
+        if (!compareIPNSignature(request).result) {
             let errorCode = 600;
             common.consoleLogError(`${errorString} Signatures do not match.`);
             response.status(errorCode);
@@ -500,7 +500,7 @@ module.exports = function (app) {
             payAddress: request.body.pay_address,
             payAmount: request.body.pay_amount,
             actuallyPaidAmount: request.body.actually_paid,
-            paidCurrency: request.body.pay_currency,
+            payCurrency: request.body.pay_currency,
             orderDescription: request.body.order_description,
             purchaseId: request.body.purchase_id,
             outcomeAmount: request.body.outcome_amount,

@@ -10,7 +10,9 @@ let transporter = null;
 module.exports = {
     sendPartiallyPaidNotifEmail: function (params) {
         let content = `Hello MVP Shop admin,<br>There is an invoice that was partially paid.<br>`
-            + `The total of the order is <b>${params.orderTotal}</b>.`;
+            + `The total of the order is <b>${params.orderTotal} USD</b>.`
+            + `The amount should be paid is <b>${params.payAmount} ${params.payCurrency}</b>.`
+            + `The partially paid amount is <b>${params} ${params.payCurrency}</b>.`
     },
 };
 

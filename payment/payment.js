@@ -529,7 +529,7 @@ module.exports = function (app) {
 
     function compareIPNSignature(request) {
         let receiverSignature = request.headers['x-nowpayments-sig'];
-        const hmac = crypto.createHmac('sha512', paymentConfig.ipn);
+        const hmac = crypto.createHmac('sha512', paymentConfig.nowspayment.ipn.toString());
         hmac.update(JSON.stringify(request.body, Object.keys(request.body).sort()));
         const signature = hmac.digest('hex');
         if (receiverSignature != signature) {

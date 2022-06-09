@@ -9,10 +9,78 @@ let transporter = null;
 
 module.exports = {
     sendPartiallyPaidNotifEmail: function (params) {
-        let content = `Hello MVP Shop admin,<br>There is an invoice that was partially paid.<br>`
-            + `The total of the order is <b>${params.orderTotal} USD</b>.`
-            + `The amount should be paid is <b>${params.payAmount} ${params.payCurrency}</b>.`
-            + `The partially paid amount is <b>${params} ${params.payCurrency}</b>.`
+        let content = `Hello MVP Shop admin,<br><br>There is an invoice that was partially paid.<br>`
+            + `<table style='padding: 10px; border-spacing: 10px;'>`
+            + '<tr>'
+            + '<td>The total amount of the order</td>'
+            + `<td style='text-align: right;'><b>${params.orderTotal} USD</b></td>`
+            + '</tr>'
+            + '<tr>'
+            + '<td>The amount should be paid</td>'
+            + `<td style='text-align: right;'><b>${params.payAmount} ${params.payCurrency}</b></td>`
+            + '</tr>'
+            + '<tr>'
+            + '<td>The partially paid amount</td>'
+            + `<td style='text-align: right;'><b>${params.actuallyPaidAmount} ${params.payCurrency}</b></td>`
+            + '</tr>'
+            + '</table>'
+            + '<br>'
+            + 'The details of the order is'
+            + `<table style='padding: 10px; border-spacing: 10px;'>`
+            + '<tr>'
+            + '<td>Customer name</td>'
+            + `<td style='vertical-align: top;'><b>${params.customerName}</b></td>`
+            + '</tr>'
+            + '<tr>'
+            + '<td>Email</td>'
+            + `<td><b>${params.customerEmail}</b></td>`
+            + '</tr>'
+            + '<tr>'
+            + `<td style='vertical-align: top;'>Delivery address</td>`
+            + `'<td>${params.deliveryAddress}</td>`
+            + '</tr>'
+            + '<tr>'
+            + `<td style='vertical-align: top;'>Note</td>`
+            + `<td>${params.note}</td>`
+            + '</tr>'
+            + '<tr>'
+            + `<td style='vertical-align: top;'>Order ID</td>`
+            + `<td><b>${params.orderId}</b></td>`
+            + '</tr>'
+            + '<tr>'
+            + `<td style='vertical-align: top;'>Invoice ID</td>`
+            + `<td><b>${params.invoiceId}</b></td>`
+            + '</tr>'
+            + '</table>'
+            + `<table style='padding: 10px; border-spacing: 10px;'>`
+            + '<tr>'
+            + `<th style='text-align: left;'>Product</th>`
+            + `<th style='text-align: right;'>Quantity</th>`
+            + `<th style='text-align: right;'>Price (USD)</th>`
+            + `<th style='text-align: right;'>Pay amount(USD)</th>`
+            + '</tr>';
+        for (let i = 0; i < params.orderDetail.length; i++) {
+            let item = params.orderDetail[i];
+            content = content + '<tr>'
+                + `<td><b>${item.name}</b></td>`
+                + `<td style='text-align: right;'>x ${item.quantity}</td>`
+                + `<td style='text-align: right;'>${item.price}.${item.price_decimal}</td>`
+                + `<td style='text-align: right;'>${item.quantity * (item.price + '.' + item.price_decimal)}</td>`
+                + '</tr>'
+        }
+        content = content + '<tr>'
+            + '<td></td>'
+            + '<td></td>'
+            + `<td style='text-align: right;'><b>Total (USD)</b></td>`
+            + `<td style='text-align: right;'><b>${params.orderTotal}</b></td>`
+            + '</tr>'
+            + '</table>'
+            + 'Please contact the customer and arrange possible payment!<br>Thank you!';
+        sendMail(content, true, mailerConfig.shopEmail, 'Partially paid order', 'warning about a partially paid order');
+    },
+
+    sendPaymentConfirmEmail: function (params) {
+
     },
 };
 

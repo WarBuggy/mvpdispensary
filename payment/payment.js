@@ -12,7 +12,7 @@ module.exports = function (app) {
         let requestIp = common.getReadableIP(request);
         let purpose = 'processing an order';
         let errorString = `${requestIp} Error when ${purpose}:`;
-        common.consoleLog(`${requestIp} requested to ${purpose}.`);
+        common.consoleLog(`${requestIp} Requested to ${purpose}.`);
 
         let inputParams = {
             email: (request.body.email || '').trim(),
@@ -487,7 +487,7 @@ module.exports = function (app) {
         let requestIp = common.getReadableIP(request);
         let purpose = 'process an invoice status update from NPG';
         let errorString = `${requestIp} Error when ${purpose}:`;
-        common.consoleLog(`${requestIp} requested to ${purpose}.`);
+        common.consoleLog(`${requestIp} Requested to ${purpose}.`);
 
         if (!compareIPNSignature(request).result) {
             let errorCode = 600;
@@ -533,12 +533,14 @@ module.exports = function (app) {
             params.note = getOrderDetailFromDbResult.orderInfo.note;
             params.orderTotal = getOrderDetailFromDbResult.orderInfo.total;
             params.customerName = getOrderDetailFromDbResult.orderInfo.name;
+            params.orderDetail = getOrderDetailFromDbResult.orderInfo.detail;
             if (params.status == 'partially_paid') {
+                mailer.sendPartiallyPaidNotifEmail(params);
                 return;
             }
-
+            mailer.sendPaymentConfirmEmail(param);
         }
-        common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
+        common.consoleLog(`${requestIp} Request to ${purpose} (invoice ${params.invoiceId}, order ${params.orderId}) was successfully handled.`);
     });
 
     function compareIPNSignature(request) {
@@ -589,23 +591,39 @@ module.exports = function (app) {
 
     async function getOrderDetailFromDb(orderId) {
         let sql = 'SELECT `order`.`email`, `order`.`delivery_address`, `order`.`note`, `order`.`total`, `order`.`name` '
-        'FROM `mvpdispensary_data`.`order` WHERE `order`.`id` = ?';
+            + 'FROM `mvpdispensary_data`.`order` WHERE `order`.`id` = ?';
         let logInfo = {
             username: 99,
             sql,
             userIP: requestIp,
-            purpose: 'Get order detail from db',
+            purpose: 'Get order data from db',
         };
         let params = [orderId];
-        let result = await db.query(logInfo, params);
-        if (result.resultCode != 0) {
+        let orderResult = await db.query(logInfo, params);
+        if (orderResult.resultCode != 0) {
             return {
                 result: false,
                 errorCode: 0,
-                errorMessage: `Database error`,
+                errorMessage: `Database error when getting order data`,
             };
         }
-        return { result: true, orderInfo: result.sqlResults, };
+
+        sql = 'SELECT P.`name` AS `name`, OD.`quantity` AS `quantity`, OD.`price` AS `price`, '
+            + 'OD.`price_decimal` AS `price_decimal` '
+            + 'FROM`mvpdispensary_data`.`order_detail` OD, `mvpdispensary_data`.`product` P '
+            + 'WHERE OD.`order` = ? AND OD.`product` = P.`id`';
+        logInfo.purpose = 'Get order details from db';
+        let orderDetailResult = await db.query(logInfo, params);
+        if (orderDetailResult.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 1,
+                errorMessage: `Database error when getting order details`,
+            };
+        }
+        let orderInfo = orderResult.sqlResults;
+        orderInfo.detail = orderDetailResult.sqlResults;
+        return { result: true, orderInfo, };
     };
     //#endregion
 };

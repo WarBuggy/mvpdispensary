@@ -1,6 +1,6 @@
 window.createOrder = async function () {
     let sendData = {
-        email: 'tester@zacbdefz.com',
+        email: 'thuynguyen222293@gmail.com',
         deliveryAddress: '233 Acbfkfe St, ACBDEF, EKLMN, VIM',
         note: 'Xin giao hàng vào lúc tối. Gọi số 0xxx xxx xxx để nhận hàng',
         total: 4,

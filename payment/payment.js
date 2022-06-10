@@ -522,7 +522,7 @@ module.exports = function (app) {
             return;
         }
 
-        if (params.status == 'finished' || params.status == 'partially_paid') {
+        if (params.paymentStatus == 'finished' || params.paymentStatus == 'partially_paid') {
             let getOrderDetailFromDbResult = await getOrderDetailFromDb(params.orderId);
             if (!getOrderDetailFromDbResult.result) {
                 common.consoleLogError(`${errorString} ${getOrderDetailFromDbResult.errorMessage}.`);
@@ -534,7 +534,7 @@ module.exports = function (app) {
             params.orderTotal = getOrderDetailFromDbResult.orderInfo.total;
             params.customerName = getOrderDetailFromDbResult.orderInfo.name;
             params.orderDetail = getOrderDetailFromDbResult.orderInfo.detail;
-            if (params.status == 'partially_paid') {
+            if (params.paymentStatus == 'partially_paid') {
                 mailer.sendPartiallyPaidNotifEmailToShopAdmin(params);
                 mailer.sendPartiallyPaidNotifEmailToCustomer(params);
                 return;
@@ -542,7 +542,7 @@ module.exports = function (app) {
             mailer.sendPaymentConfirmEmailToShopAdmin(params);
             mailer.sendPaymentConfirmEmailToCustomer(params);
         }
-        common.consoleLog(`${requestIp} Request to ${purpose} (invoice ${params.invoiceId}, order ${params.orderId}) was successfully handled.`);
+        common.consoleLog(`${requestIp} Request to ${purpose} (invoice ${params.invoiceId}, order ${params.orderId}, status ${params.paymentStatus}) was successfully handled.`);
     });
 
     function compareIPNSignature(request) {

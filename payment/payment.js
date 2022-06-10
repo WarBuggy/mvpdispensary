@@ -523,7 +523,7 @@ module.exports = function (app) {
         }
 
         if (params.paymentStatus == 'finished' || params.paymentStatus == 'partially_paid') {
-            let getOrderDetailFromDbResult = await getOrderDetailFromDb(params.orderId);
+            let getOrderDetailFromDbResult = await getOrderDetailFromDb(params.orderId, requestIp);
             if (!getOrderDetailFromDbResult.result) {
                 common.consoleLogError(`${errorString} ${getOrderDetailFromDbResult.errorMessage}.`);
                 return;
@@ -591,7 +591,7 @@ module.exports = function (app) {
         return { result: true };
     };
 
-    async function getOrderDetailFromDb(orderId) {
+    async function getOrderDetailFromDb(orderId, requestIp) {
         let sql = 'SELECT `order`.`email`, `order`.`delivery_address`, `order`.`note`, `order`.`total`, `order`.`name` '
             + 'FROM `mvpdispensary_data`.`order` WHERE `order`.`id` = ?';
         let logInfo = {

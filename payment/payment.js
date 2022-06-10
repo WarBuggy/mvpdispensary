@@ -535,10 +535,12 @@ module.exports = function (app) {
             params.customerName = getOrderDetailFromDbResult.orderInfo.name;
             params.orderDetail = getOrderDetailFromDbResult.orderInfo.detail;
             if (params.status == 'partially_paid') {
-                mailer.sendPartiallyPaidNotifEmail(params);
+                mailer.sendPartiallyPaidNotifEmailToShopAdmin(params);
+                mailer.sendPartiallyPaidNotifEmailToCustomer(params);
                 return;
             }
-            mailer.sendPaymentConfirmEmail(param);
+            mailer.sendPaymentConfirmEmailToShopAdmin(params);
+            mailer.sendPaymentConfirmEmailToCustomer(params);
         }
         common.consoleLog(`${requestIp} Request to ${purpose} (invoice ${params.invoiceId}, order ${params.orderId}) was successfully handled.`);
     });

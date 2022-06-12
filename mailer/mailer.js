@@ -48,7 +48,7 @@ module.exports = {
             + 'Xin quý khách vui lòng thông cảm và hợp lực cùng chúng tôi để vấn đề được giải quyết thỏa đáng. Xin chân thành cảm ơn quý khách!'
             + '<br>'
             + 'Trân trọng,'
-        sendMail(content, true, mailerConfig.shopEmail, `Đơn hàng chưa được thanh toán đầy đủ (${params.orderId})`, 'warning customer about a partially paid order');
+        sendMail(content, true, params.customerEmail, `Đơn hàng chưa được thanh toán đầy đủ (${params.orderId})`, 'warning customer about a partially paid order');
     },
     sendPaymentConfirmEmailToCustomer: function (params) {
         let content = `Xin chào ${params.customerName},<br>`
@@ -67,7 +67,7 @@ module.exports = {
             + 'Chúng tôi luôn cố gắng để trải nghiệm mua sắp tại mvpdispensary.com luôn được hoàn hảo. Xin chân thành cảm ơn quý khách!'
             + '<br>'
             + 'Trân trọng,'
-        sendMail(content, true, mailerConfig.shopEmail, `Đơn hàng đã được thanh toán đầy đủ (${params.orderId})`, 'notify customer about a fully paid order');
+        sendMail(content, true, params.customerEmail, `Đơn hàng đã được thanh toán đầy đủ (${params.orderId})`, 'notify customer about a fully paid order');
     },
 };
 

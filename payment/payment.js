@@ -609,12 +609,14 @@ module.exports = function (app) {
                 errorMessage: `Database error when getting order data`,
             };
         }
+        let orderInfo = orderResult.sqlResults;
 
         sql = 'SELECT P.`name` AS `name`, OD.`quantity` AS `quantity`, OD.`price` AS `price`, '
             + 'OD.`price_decimal` AS `price_decimal` '
             + 'FROM`mvpdispensary_data`.`order_detail` OD, `mvpdispensary_data`.`product` P '
             + 'WHERE OD.`order` = ? AND OD.`product` = P.`id`';
         logInfo.purpose = 'Get order details from db';
+        logInfo.sql = sql;
         let orderDetailResult = await db.query(logInfo, params);
         if (orderDetailResult.resultCode != 0) {
             return {
@@ -623,7 +625,6 @@ module.exports = function (app) {
                 errorMessage: `Database error when getting order details`,
             };
         }
-        let orderInfo = orderResult.sqlResults;
         orderInfo.detail = orderDetailResult.sqlResults;
         return { result: true, orderInfo, };
     };

@@ -609,7 +609,7 @@ module.exports = function (app) {
                 errorMessage: `Database error when getting order data`,
             };
         }
-        let orderInfo = orderResult.sqlResults;
+        let orderInfo = orderResult.sqlResults[0];
 
         sql = 'SELECT P.`name` AS `name`, OD.`quantity` AS `quantity`, OD.`price` AS `price`, '
             + 'OD.`price_decimal` AS `price_decimal` '

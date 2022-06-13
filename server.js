@@ -36,5 +36,6 @@ function prepareHttpServer() {
     http.createServer(app).listen(systemConfig.httpPort, function () {
         common.consoleLog(`HTTP Server started on port ${systemConfig.httpPort}.`);
         require('./payment/payment.js')(app);
+        require('./product.js')(app);
     });
 };

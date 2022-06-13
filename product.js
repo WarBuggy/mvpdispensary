@@ -2,7 +2,7 @@ const common = require('./common.js');
 const db = require('./db/db.js');
 
 module.exports = function (app) {
-    app.get('/product/list', async function (request, response) {
+    app.post('/product/list', async function (request, response) {
         let requestIp = common.getReadableIP(request);
         let purpose = 'get product data';
         let errorString = `${requestIp} Error when ${purpose}:`;

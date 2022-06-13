@@ -1,5 +1,5 @@
-const common = require('../common.js');
-const db = require('../db/db.js');
+const common = require('./common.js');
+const db = require('./db/db.js');
 
 module.exports = function (app) {
     app.get('/product/list', async function (request, response) {

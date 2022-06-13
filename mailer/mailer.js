@@ -136,7 +136,7 @@ function createOrderContent(params) {
         + '</tr>'
         + '<tr>'
         + `<td style='vertical-align: top;'>Địa chỉ giao hàng</td>`
-        + `'<td>${params.deliveryAddress}</td>`
+        + `<td>${params.deliveryAddress}</td>`
         + '</tr>'
         + '<tr>'
         + `<td style='vertical-align: top;'>Lưu ý</td>`

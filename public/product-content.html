@@ -15,10 +15,11 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
     <!-- COMMON SCRIPT -->
-    <script src="scripts/common/backendURL.js?version=1.0"></script>
-    <script src="scripts/common/common.js?version=1.0"></script>
+    <script src="assets/js/backendURL.js?v1.0"></script>
+    <script src="assets/js/common.js?v1.0"></script>
     <!-- SCRIPT -->
-    <script src="scripts/payment.js?version=0.1"></script>
+    <script src="assets/js/payment.js?v1.0"></script>
+    <script src="assets/js/cart.js?v0.1"></script>
 </head>
 
 <body class="no-js">
@@ -36,6 +37,7 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-lg-5 col-navigation">
                             <ul class="menu">
+                                <!--
                                 <li>
                                     <span class="mas">BUD</span>
                                     <a href="products.html">BUD</a>
@@ -44,9 +46,10 @@
                                     <span class="mas">CANDY & CHIPS</span>
                                     <a href="products.html">CANDY & CHIPS</a>
                                 </li>
+                                -->
                                 <li class="menu-item-has-children">
-                                    <span class="mas">OIL THC</span>
-                                    <a>OIL THC</a>
+                                    <span class="mas">SẢN PHẦM</span>
+                                    <a>SẢN PHẨM</a>
                                     <ul>
                                         <li><a href="products.html">BUDDIES CANNABIS OIL</a></li>
                                         <li><a href="products.html">BUDHDA VAPE</a></li>
@@ -270,10 +273,12 @@
                     </form>
                     <a href="countdown.html" class="tool-countdown d-none d-lg-block"></a>
                     <ul class="toolbar-social social">
+                        <!--
                         <li><a href="#"><img src="assets/upload/flag-for-us-outlying-islands-svgrepo-com.svg"
                                     alt="English"></a></li>
                         <li><a href="#"><img src="assets/upload/flag-for-vietnam-svgrepo-com.svg" alt="Tiếng Việt"></a>
                         </li>
+                        -->
                         <li><a href="#"><img class="light-on" src="assets/upload/lighter-svgrepo-com.svg"
                                     alt="Bật đèn"></a></li>
                         <li><a href="https://t.me/leeteetee" target="_blank"><img
@@ -281,11 +286,12 @@
                         </li>
                         <li><a href="https://www.messenger.com/t/100077012441329/" target="_blank"><img
                                     src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger"></a></li>
-
+                        <!--
                         <li><a href="account.html"><img src="assets/upload/user-svgrepo-com.svg" alt="Tài khoản"></a>
                         </li>
-                        <li><a href="cart.html"><img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng"></a>
-                        </li>
+                        -->
+                        <li><img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng" style="cursor: pointer;"
+                                onclick="showCart()">
                     </ul>
                 </div>
                 <!-- /.col -->

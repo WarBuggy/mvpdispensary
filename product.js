@@ -90,7 +90,7 @@ module.exports = function (app) {
                 id, name, priority,
             };
         }
-        return { result: true, categoryList: result.sqlResults, };
+        return { result: true, categoryList, };
     };
 
 

@@ -57,7 +57,7 @@ module.exports = function (app) {
                     id, name, description, price, priceDecimal, availability, priority,
                 };
                 product.categoryName = category.name;
-                product.category.priority = category.priority;
+                product.categoryPriority = category.priority;
             }
         }
     };

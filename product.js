@@ -171,7 +171,7 @@ module.exports = function (app) {
             }
             let image = {
                 id: productImage.id,
-                product: productImage,
+                product: productId,
                 priority: productImage.priority,
                 extension: productImage.extension,
             };

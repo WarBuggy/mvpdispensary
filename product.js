@@ -34,6 +34,7 @@ module.exports = function (app) {
             response.json({ success: false, message: 'Không thể lấy thông tin hình sản phẩm', });
             return;
         }
+        let productImageList = productImageListResult.productImageList;
         processCategoryAndProductList(categoryList, productList, productImageList);
         let resJson = {
             success: true,

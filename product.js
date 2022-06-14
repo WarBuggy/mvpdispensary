@@ -26,7 +26,15 @@ module.exports = function (app) {
             return;
         }
         let productList = getProductResult.productList;
-        processCategoryAndProductList(categoryList, productList);
+        let productImageListResult = await getProductImage(requestIp);
+        if (!productImageListResult.result) {
+            let errorCode = 620 + productImageListResult.errorCode;
+            common.consoleLogError(`${errorString} ${productImageListResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Không thể lấy thông tin hình sản phẩm', });
+            return;
+        }
+        processCategoryAndProductList(categoryList, productList, productImageList);
         let resJson = {
             success: true,
             result: 0,
@@ -37,7 +45,7 @@ module.exports = function (app) {
         common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
     });
 
-    function processCategoryAndProductList(categoryList, productList) {
+    function processCategoryAndProductList(categoryList, productList, productImageList) {
         for (const categoryId in categoryList) {
             let category = categoryList[categoryId];
             category.productList = {};
@@ -55,9 +63,11 @@ module.exports = function (app) {
                 let priority = product.priority;
                 category.productList[id] = {
                     id, name, description, price, priceDecimal, availability, priority,
+                    imageList: productImageList[id],
                 };
                 product.categoryName = category.name;
                 product.categoryPriority = category.priority;
+                product.imageList = productImageList[id];
             }
         }
     };
@@ -129,4 +139,44 @@ module.exports = function (app) {
         }
         return { result: true, productList, };
     };
+
+    async function getProductImage(requestIp) {
+        let sql = 'SELECT PI.`id`, PI.`product`, PI.`priority`, PI.`extension` '
+            + 'FROM `mvpdispensary_data`.`product_image` PI, `mvpdispensary_data`.`product` P '
+            + 'WHERE PI.enable = 0 AND P.`id` = PI.`product` AND P.`enable` = 0 '
+            + 'ORDER BY PI.`product`, PI.`priority` DESC;'
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'get product image list',
+        };
+        let result = await db.query(logInfo);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        let productImageList = {};
+        for (let i = 0; i < result.sqlResults.length; i++) {
+            let productImage = result.sqlResults[i];
+            let productId = productImage.product;
+            let imageList = productImageList[productId];
+            if (imageList == null) {
+                imageList = [];
+                productImageList[productId] = imageList;
+            }
+            let image = {
+                id: productImage.id,
+                product: productId,
+                priority: product.priority,
+                extension: product.extension,
+            };
+            imageList.push(image);
+        }
+        return { result: true, productImageList, };
+    };
+
 };

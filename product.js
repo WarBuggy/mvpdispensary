@@ -170,9 +170,9 @@ module.exports = function (app) {
             }
             let image = {
                 id: productImage.id,
-                product: productId,
-                priority: product.priority,
-                extension: product.extension,
+                product: productImage,
+                priority: productImage.priority,
+                extension: productImage.extension,
             };
             imageList.push(image);
         }

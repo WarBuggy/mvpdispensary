@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en" style="background: #000000;">
+
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -13,8 +14,14 @@
     <link rel="stylesheet" href="assets/css/style.css?ver=1.0.2">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
-
+    <!-- COMMON SCRIPT -->
+    <script src="assets/js/backendURL.js?v1.0"></script>
+    <script src="assets/js/common.js?v1.0"></script>
+    <!-- SCRIPT -->
+    <script src="assets/js/products.js?v0.1"></script>
+    <script src="assets/js/cart.js?v0.1"></script>
 </head>
+
 <body class="no-js">
     <div class="loader d-flex">
         <div class="loader-content aligncenter">
@@ -22,7 +29,7 @@
             <p>e-cigarettes, e-liquids, vape kits &amp; pens</p>
         </div>
     </div>
-    
+
     <div class="main">
         <header class="header-global">
             <div class="header">
@@ -30,49 +37,11 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-lg-5 col-navigation">
                             <ul class="menu">
-                                <li>
-                                    <span class="mas">BUD</span>
-                                    <a href="products.html">BUD</a>
-                                </li>
-                                <li>
-                                    <span class="mas">CANDY & CHIPS</span>
-                                    <a href="products.html">CANDY & CHIPS</a>
-                                </li>
-                                <li class="menu-item-has-children">
-                                    <span class="mas">OIL THC</span>
-                                    <a>OIL THC</a>
+                                <li class="menu-item-has-children" id="liProduct">
+                                    <span class="mas">DANH MỤC SẢN PHẨM</span>
+                                    <a>DANH MỤC SẢN PHẨM</a>
                                     <ul>
-                                        <li><a href="products.html">BUDDIES CANNABIS OIL</a></li>
-                                        <li><a href="products.html">BUDHDA VAPE</a></li>
-                                        <li><a href="products.html">EUREKA VAPER</a></li>
-                                        <li><a href="products.html">HÃNG KUVARNA</a></li>
-                                        <li><a href="products.html">STIIIZY</a></li>
                                     </ul>
-                                </li>
-                                <li class="d-block d-lg-none menu-item-has-children active">
-                                    <span class="mas">SALE</span>
-                                    <a>SALE</a>
-                                    <ul>
-                                        <li><a href="countdown.html">COUNTDOWN EVENTS</a></li>
-                                        <li><a href="products.html">SẢN PHẨM GIẢM GIÁ</a></li>
-                                    </ul>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <span class="mas">THANH TOÁN BUSD/TUSD</span>
-                                    <a href="payment.html">THANH TOÁN BUSD/TUSD</a>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <span class="mas">BLOG</span>
-                                    <a href="blog-list.html">BLOG</a>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <form class="searchform">
-                                        <input class="search" type="search" name="search" placeholder="Tìm kiếm">
-                                        <img src="assets/upload/search.svg" alt="Tìm kiếm">
-                                    </form>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <a class="tool-countdown" href="countdown.html"></a>
                                 </li>
                             </ul>
                         </div>
@@ -86,21 +55,9 @@
                         <!-- /.col -->
                         <div class="col-12 col-lg-5">
                             <ul class="menu nd-menu">
-                                <li class="menu-item-has-children active">
-                                    <span class="mas">SALE</span>
-                                    <a>SALE</a>
-                                    <ul>
-                                        <li><a href="countdown.html">COUNTDOWN EVENTS</a></li>
-                                        <li><a href="products.html">SẢN PHẨM GIẢM GIÁ</a></li>
-                                    </ul>
-                                </li>
                                 <li>
-                                    <span class="mas">THANH TOÁN BUSD/TUSD</span>
-                                    <a href="payment.html">THANH TOÁN BUSD/TUSD</a>
-                                </li>
-                                <li>
-                                    <span class="mas">BLOG</span>
-                                    <a href="blog-list.html">BLOG</a>
+                                    <span class="mas">HƯỚNG DẪN THANH TOÁN</span>
+                                    <a href="payment.html">HƯỚNG DẪN THANH TOÁN</a>
                                 </li>
                             </ul>
                         </div>
@@ -119,19 +76,25 @@
                         <div class="col-12">
                             <div class="section-title aligncenter">
                                 <h2>
-                                <span>TẤC CẢ SẢN PHẨM</span>
+                                    <span id="spanTitle"></span>
                                 </h2>
                             </div>
+                            <div class="grid-product-parent" id="gridProductParent">
+                            </div>
+                            <!--
                             <div class="product-list">
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item sale">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/product-1.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-1.jpg');"></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/product-1.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-1.jpg');"></span>
                                                 <span class="price">
                                                     <span class="old-price"><span class="currency"></span>300.00</span>
-                                                    <span class="currency"></span>50.00 - <span class="currency">150.00</span>
+                                                    <span class="currency"></span>50.00 - <span
+                                                        class="currency">150.00</span>
                                                 </span>
                                                 <p class="product-name">ACAPULCO GOLD 25TH ANNIVERSARY CART</p>
                                             </a>
@@ -140,10 +103,13 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item hot">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/product-2.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-2.jpg');"></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/product-2.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-2.jpg');"></span>
                                                 <span class="price">
-                                                    <span class="currency"></span>60.00 - <span class="currency">180.00</span>
+                                                    <span class="currency"></span>60.00 - <span
+                                                        class="currency">180.00</span>
                                                 </span>
                                                 <p class="product-name">DURBAN VENOM THCV ENERGY VAPE</p>
                                             </a>
@@ -152,9 +118,12 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/product-3.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-3.jpg');"></span>
-                                                <span class="price"><span class="currency"></span>55.00 - <span class="currency">170.00</span></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/product-3.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-3.jpg');"></span>
+                                                <span class="price"><span class="currency"></span>55.00 - <span
+                                                        class="currency">170.00</span></span>
                                                 <p class="product-name">LIGHTS OUT CLOUDBERRY CBN SLEEP VAPE</p>
                                             </a>
                                         </div>
@@ -162,8 +131,10 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/product-4.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-4.jpg');"></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/product-4.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-4.jpg');"></span>
                                                 <span class="price"><span class="currency"></span>5.00</span>
                                                 <p class="product-name">DIAMOND PRE-ROLL</p>
                                             </a>
@@ -172,9 +143,12 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-5.png');"></span>
-                                                <span class="price"><span class="currency"></span>50.00 - <span class="currency">500.00</span></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-5.png');"></span>
+                                                <span class="price"><span class="currency"></span>50.00 - <span
+                                                        class="currency">500.00</span></span>
                                                 <p class="product-name">HVY 25 BEVERAGES</p>
                                             </a>
                                         </div>
@@ -182,8 +156,10 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-5.png');"></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-5.png');"></span>
                                                 <span class="price"><span class="currency"></span>5.00</span>
                                                 <p class="product-name">HVY 25 BEVERAGES</p>
                                             </a>
@@ -192,9 +168,12 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-5.png');"></span>
-                                                <span class="price"><span class="currency"></span>50.00 - <span class="currency">500.00</span></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-5.png');"></span>
+                                                <span class="price"><span class="currency"></span>50.00 - <span
+                                                        class="currency">500.00</span></span>
                                                 <p class="product-name">HVY 25 BEVERAGES</p>
                                             </a>
                                         </div>
@@ -202,15 +181,19 @@
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item">
                                             <a href="product-content.html">
-                                                <span class="st-photo" style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
-                                                <span class="nd-photo" style="background-image: url('assets/upload/product-5.png');"></span>
-                                                <span class="price"><span class="currency"></span>50.00 - <span class="currency">500.00</span></span>
+                                                <span class="st-photo"
+                                                    style="background-image: url('assets/upload/HVY25SQUARE_540x.png');"></span>
+                                                <span class="nd-photo"
+                                                    style="background-image: url('assets/upload/product-5.png');"></span>
+                                                <span class="price"><span class="currency"></span>50.00 - <span
+                                                        class="currency">500.00</span></span>
                                                 <p class="product-name">HVY 25 BEVERAGES</p>
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
@@ -230,14 +213,25 @@
                     </form>
                     <a href="countdown.html" class="tool-countdown d-none d-lg-block"></a>
                     <ul class="toolbar-social social">
-                        <li><a href="#"><img src="assets/upload/flag-for-us-outlying-islands-svgrepo-com.svg" alt="English"></a></li>
-                        <li><a href="#"><img src="assets/upload/flag-for-vietnam-svgrepo-com.svg" alt="Tiếng Việt"></a></li>
-                        <li><a href="#"><img class="light-on" src="assets/upload/lighter-svgrepo-com.svg" alt="Bật đèn"></a></li>
-                        <li><a href="https://t.me/leeteetee" target="_blank"><img src="assets/upload/telegram-logo-svgrepo-com.svg" alt="Liên hệ qua Telegram"></a></li>
-                        <li><a href="https://www.messenger.com/t/100077012441329/" target="_blank"><img src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger"></a></li>
-
-                        <li><a href="account.html"><img src="assets/upload/user-svgrepo-com.svg" alt="Tài khoản"></a></li>
-                        <li><a href="cart.html"><img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng"></a></li>
+                        <li>
+                            <a href="#">
+                                <img class="light-on" src="assets/upload/lighter-svgrepo-com.svg" alt="Bật đèn">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://t.me/leeteetee" target="_blank">
+                                <img src="assets/upload/telegram-logo-svgrepo-com.svg" alt="Liên hệ qua Telegram">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.messenger.com/t/100077012441329/" target="_blank">
+                                <img src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger">
+                            </a>
+                        </li>
+                        <li>
+                            <img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng" style="cursor: pointer;"
+                                onclick="showCart()">
+                        </li>
                     </ul>
                 </div>
                 <!-- /.col -->
@@ -265,9 +259,9 @@
                     </div>
                     <!-- /.col -->
                     <div class="d-none d-lg-block col-lg-2 aligncenter">
-                            <a class="footer-logo" href="home.html">
-                                <img src="assets/upload/logo.png" alt="Vape Store Online">
-                            </a>
+                        <a class="footer-logo" href="home.html">
+                            <img src="assets/upload/logo.png" alt="Vape Store Online">
+                        </a>
                         <!-- /.footer-infoblock -->
                     </div>
                     <!-- /.col -->
@@ -286,11 +280,12 @@
         <!-- /.footer-wrap -->
     </footer>
 
-    
+
     <script src="assets/js/jquery-3.6.0.min.js"></script>
     <script src="assets/js/migrate.js"></script>
     <script src="assets/js/library.js"></script>
     <script src="assets/js/aos.js"></script>
     <script src="assets/js/script.js?ver=1.0.2"></script>
 </body>
+
 </html>

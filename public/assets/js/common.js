@@ -192,4 +192,86 @@ class Common {
         };
         Common.sendToBackend('/api/traffic/page/save', sendData);
     };
+
+
+    static async getProductList() {
+        try {
+            let response = await Common.sendToBackend('product/list');
+            return {
+                result: true,
+                categoryList: response.categoryList,
+                productList: response.productList,
+            }
+        } catch (error) {
+            return {
+                result: false,
+                message: `Không thể nhận được danh sách sản phẩm (${error})`,
+            }
+        }
+    };
+
+    static populateCategoryMenuItem(parentElement, linkPrefix) {
+        for (const categoryId in window.categoryList) {
+            let category = window.categoryList[categoryId];
+            let li = document.createElement('li');
+            li.style['margin-left'] = '15px';
+            let a = document.createElement('a');
+            a.setAttribute('href', `${linkPrefix}${categoryId}`);
+            a.innerText = category.name.toString().toUpperCase();
+            li.appendChild(a);
+            parentElement.appendChild(li);
+        }
+    };
+
+    static createDivProduct(product) {
+        let divOuter = document.createElement('div');
+        divOuter.className = 'col-12 col-md-6 col-lg-4 col-xl-3 aos-init aos-animate';
+        divOuter.setAttribute('data-aos', 'fade-up');
+        divOuter.setAttribute('data-aos-duration', '500');
+        divOuter.style.cursor = 'pointer';
+        divOuter.style.maxWidth = '100%';
+
+        let divInner = document.createElement('div');
+        divInner.className = 'product-item aos-init aos-animate';
+        divInner.setAttribute('data-aos', 'fade-up');
+        divInner.setAttribute('data-aos-duration', '500');
+        divOuter.appendChild(divInner);
+
+        let a = document.createElement('a');
+        a.setAttribute('href', `product-content.html?id=${product.id}`);
+        divInner.appendChild(a);
+
+        if (product.imageList.length > 0) {
+            let imageFirst = product.imageList[0];
+            let spanFirstImage = document.createElement('span');
+            spanFirstImage.className = 'st-photo';
+            spanFirstImage.style.backgroundImage = `url('assets/upload/product/${imageFirst.id}.${imageFirst.extension}')`;
+            a.appendChild(spanFirstImage);
+        }
+        let secondImageIndex = 0;
+        if (product.imageList.length > 1) {
+            secondImageIndex = 1;
+        }
+        let imageSecond = product.imageList[secondImageIndex];
+        let spanSecondImage = document.createElement('span');
+        spanSecondImage.className = 'nd-photo';
+        spanSecondImage.style.backgroundImage = `url('assets/upload/product/${imageSecond.id}.${imageSecond.extension}')`;
+        a.appendChild(spanSecondImage);
+
+        let spanPriceOuter = document.createElement('span');
+        spanPriceOuter.className = 'price';
+        a.appendChild(spanPriceOuter);
+
+        let spanPrice = document.createElement('span');
+        spanPrice.className = 'currency';
+        spanPrice.innerText = `$${product.price}.${product.priceDecimal}`;
+        spanPriceOuter.appendChild(spanPrice);
+
+        let p = document.createElement('p');
+        p.className = 'product-name';
+        p.innerText = product.name.toUpperCase();
+        a.appendChild(p);
+
+        return divOuter;
+    }
 };

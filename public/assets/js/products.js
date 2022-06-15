@@ -13,11 +13,36 @@ window.addEventListener('load', async function () {
     }
     ulCategory.style['margin-top'] = '20px';
     ulCategory.innerHTML = '';
-    Common.populateCategoryMenuItem(ulCategory, 'home.html#cat');
-    populateProductList();
+    Common.populateCategoryMenuItem(ulCategory, 'products.html?cat=');
+
+    let param = createParam();
+    document.getElementById('spanTitle').innerText = param.titleText;
+    populateProductList(param);
 });
 
-function populateProductList() {
+function createParam() {
+    let param = {
+        category: null,
+        search: null,
+        titleText: null,
+    };
+    let catParam = Common.getURLParameter('cat');
+    if (catParam != null) {
+        param.category = catParam;
+        param.titleText = 'DANH SÁCH SẢN PHẨM';
+        return param;
+    }
+    let searchParam = Common.getURLParameter('search');
+    if (searchParam != null) {
+        param.search = searchParam;
+        param.titleText = 'DANH SÁCH SẢN PHẨM';
+        return param;
+    }
+    param.titleText = 'TẤC CẢ SẢN PHẨM';
+    return param;
+};
+
+function populateProductList(param) {
     let divParent = document.getElementById('gridProductParent');
     if (divParent == null) {
         return;
@@ -25,6 +50,11 @@ function populateProductList() {
     divParent.innerHTML = '';
 
     for (const categoryId in window.categoryList) {
+        if (param.category != null) {
+            if (param.category != categoryId) {
+                continue;
+            }
+        }
         let category = window.categoryList[categoryId];
         let hCategoryTitle = document.createElement('h3');
         hCategoryTitle.classList.add('category-title');

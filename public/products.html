@@ -81,6 +81,9 @@
                             </div>
                             <div class="grid-product-parent" id="gridProductParent">
                             </div>
+                            <div id="divNoSearchResult" class="no-search-result">
+                                Rất tiếc, chúng tôi không tìm thấy được kết quả nào.
+                            </div>
                             <!--
                             <div class="product-list">
                                 <div class="row">
@@ -205,13 +208,16 @@
     <div class="toolbar">
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col bottom-bar">
                     <a href="#" class="navigation-toggle"><span class="navigation-toggle-icon"></span></a>
-                    <form class="searchform d-none d-lg-flex">
-                        <input class="search" type="search" name="search" placeholder="Tìm kiếm">
-                        <img src="assets/upload/search.svg" alt="Tìm kiếm">
-                    </form>
+                    <div class="search-outer">
+                        <input id='inputSearch' class="search" type="search" name="search" placeholder="Tìm kiếm">
+                        <img class='search-glass' src="assets/upload/search.svg" alt="Tìm kiếm"
+                            onclick="Common.searchByKeyword()">
+                    </div>
+                    <!--
                     <a href="countdown.html" class="tool-countdown d-none d-lg-block"></a>
+                    -->
                     <ul class="toolbar-social social">
                         <li>
                             <a href="#">

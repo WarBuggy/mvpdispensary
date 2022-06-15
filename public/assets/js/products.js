@@ -1,4 +1,6 @@
 window.addEventListener('load', async function () {
+    Common.addEnterEventForSearch();
+
     let getProductListResult = await Common.getProductList();
     if (!getProductListResult.result) {
         this.alert(getProductListResult.message);
@@ -34,6 +36,7 @@ function createParam() {
     }
     let searchParam = Common.getURLParameter('search');
     if (searchParam != null) {
+        searchParam = decodeURI(searchParam);
         param.search = Common.toLowerCaseNonAccentVietnamese(searchParam);
         param.titleText = 'KẾT QUẢ TÌM KIẾM';
         return param;
@@ -52,7 +55,13 @@ function populateProductList(param) {
     let list = window.categoryList;
     if (param.search != null) {
         list = Common.search(param.search);
+        document.getElementById('inputSearch').value = param.search;
     }
+    if (Object.keys(list).length < 1) {
+        document.getElementById('divNoSearchResult').style.display = 'block';
+        return;
+    }
+
     for (const categoryId in list) {
         if (param.category != null) {
             if (param.category != categoryId) {
@@ -60,6 +69,9 @@ function populateProductList(param) {
             }
         }
         let category = list[categoryId];
+        if (param.search != null && category.searchResult == false) {
+            continue;
+        }
         let hCategoryTitle = document.createElement('h3');
         hCategoryTitle.classList.add('category-title');
         hCategoryTitle.innerText = category.name;
@@ -68,6 +80,9 @@ function populateProductList(param) {
 
         for (const productId in category.productList) {
             let product = category.productList[productId];
+            if (param.search != null && product.searchResult == false) {
+                continue;
+            }
             let divOuter = Common.createDivProduct(product);
             divParent.appendChild(divOuter);
         }

@@ -305,6 +305,9 @@ class Common {
     static matchMultipleKeyword(text, wordList) {
         for (let i = 0; i < wordList.length; i++) {
             let word = wordList[i];
+            if (word.length < 3) {
+                continue;
+            }
             if (text.includes(word)) {
                 return true;
             }
@@ -336,4 +339,24 @@ class Common {
         str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
         return str;
     };
-};
+
+    static searchByKeyword() {
+        let input = document.getElementById('inputSearch').value.trim();
+        if (input.length < 3) {
+            return;
+        }
+        window.location.href = `products.html?search=${input}`;
+    };
+
+    static addEnterEventForSearch() {
+        let inputSearch = document.getElementById('inputSearch');
+        inputSearch.addEventListener("keypress", function (event) {
+            // If the user presses the "Enter" key on the keyboard
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                Common.searchByKeyword();
+            }
+        });
+    };
+}

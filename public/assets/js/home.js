@@ -1,4 +1,6 @@
 window.addEventListener('load', async function () {
+    Common.addEnterEventForSearch();
+
     let getProductListResult = await Common.getProductList();
     if (!getProductListResult.result) {
         this.alert(getProductListResult.message);

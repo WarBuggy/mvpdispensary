@@ -471,27 +471,34 @@
     <div class="toolbar">
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col bottom-bar">
                     <a href="#" class="navigation-toggle"><span class="navigation-toggle-icon"></span></a>
-                    <form class="searchform d-none d-lg-flex">
-                        <input class="search" type="search" name="search" placeholder="Tìm kiếm">
-                        <img src="assets/upload/search.svg" alt="Tìm kiếm">
-                    </form>
+                    <div class="search-outer">
+                        <input id='inputSearch' class="search" type="search" name="search" placeholder="Tìm kiếm">
+                        <img class='search-glass' src="assets/upload/search.svg" alt="Tìm kiếm"
+                            onclick="Common.searchByKeyword()">
+                    </div>
+                    <!--
                     <a href="countdown.html" class="tool-countdown d-none d-lg-block"></a>
+                    -->
                     <ul class="toolbar-social social">
-                        <!--
-                        <li><a href="#"><img src="assets/upload/flag-for-us-outlying-islands-svgrepo-com.svg" alt="English"></a></li>
-                        <li><a href="#"><img src="assets/upload/flag-for-vietnam-svgrepo-com.svg" alt="Tiếng Việt"></a></li>
-                        -->
-                        <li><a href="#"><img class="light-on" src="assets/upload/lighter-svgrepo-com.svg"
-                                    alt="Bật đèn"></a></li>
-                        <li><a href="https://t.me/leeteetee" target="_blank"><img
-                                    src="assets/upload/telegram-logo-svgrepo-com.svg" alt="Liên hệ qua Telegram"></a>
+                        <li>
+                            <a href="#">
+                                <img class="light-on" src="assets/upload/lighter-svgrepo-com.svg" alt="Bật đèn">
+                            </a>
                         </li>
-                        <li><a href="https://www.messenger.com/t/100077012441329/" target="_blank"><img
-                                    src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger"></a></li>
-                        <!--<li><a href="account.html"><img src="assets/upload/user-svgrepo-com.svg" alt="Tài khoản"></a></li>-->
-                        <li><img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng" style="cursor: pointer;"
+                        <li>
+                            <a href="https://t.me/leeteetee" target="_blank">
+                                <img src="assets/upload/telegram-logo-svgrepo-com.svg" alt="Liên hệ qua Telegram">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.messenger.com/t/100077012441329/" target="_blank">
+                                <img src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger">
+                            </a>
+                        </li>
+                        <li>
+                            <img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng" style="cursor: pointer;"
                                 onclick="showCart()">
                         </li>
                     </ul>

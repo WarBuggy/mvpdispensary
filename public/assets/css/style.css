@@ -7277,3 +7277,53 @@ img.search-glass {
 img.search-glass:hover {
   background-color: black;
 }
+
+div.popup-background {
+  display: grid;
+  background-color: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  align-items: center;
+  justify-items: center;
+  z-index: 10000 !important;
+}
+
+div.cart-outer {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-radius: 8px;
+  width: 300px;
+  border: 1px solid whitesmoke;
+  position: relative;
+  background-color: black;
+}
+
+div.cart-top {
+  text-align: center;
+  font-size: larger;
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+div.cart-close {
+  position: relative;
+  top: -50px;
+  right: -275px;
+  font-size: large;
+  color: red;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  font-weight: bold;
+}
+
+div.cart-no-item {
+  padding: 10px;
+  font-size: medium;
+  margin-bottom: 10px;
+}

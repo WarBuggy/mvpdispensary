@@ -15,8 +15,10 @@ window.addEventListener('load', async function () {
     }
     ulCategory.style['margin-top'] = '20px';
     ulCategory.innerHTML = '';
-    Common.populateCategoryMenuItem(ulCategory, 'home.html#cat');
+    Common.populateCategoryMenuItem(ulCategory, `home.html#cat`);
     populateProductList();
+
+    Common.runScript();
 });
 
 function populateProductList() {

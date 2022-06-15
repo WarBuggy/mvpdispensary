@@ -19,7 +19,11 @@ window.addEventListener('load', async function () {
 
     let param = createParam();
     document.getElementById('spanTitle').innerText = param.titleText;
-    populateProductList(param);
+
+    let idInList = populateProductList(param);
+    populateProductSlider(idInList);
+
+    Common.runScript();
 });
 
 function createParam() {
@@ -53,15 +57,15 @@ function populateProductList(param) {
     divParent.innerHTML = '';
 
     let list = window.categoryList;
+    let idInList = [];
     if (param.search != null) {
         list = Common.search(param.search);
         document.getElementById('inputSearch').value = param.search;
     }
     if (Object.keys(list).length < 1) {
         document.getElementById('divNoSearchResult').style.display = 'block';
-        return;
+        return idInList;
     }
-
     for (const categoryId in list) {
         if (param.category != null) {
             if (param.category != categoryId) {
@@ -85,6 +89,26 @@ function populateProductList(param) {
             }
             let divOuter = Common.createDivProduct(product);
             divParent.appendChild(divOuter);
+            idInList.push(product.id);
         }
     }
+    return idInList;
 };
+
+
+function populateProductSlider(idInList) {
+    if (idInList.length == Object.keys(window.productList).length) {
+        document.getElementById('divSliderOuter').style.display = 'none';
+        return;
+    }
+    let outer = document.getElementById('divProductSlider');
+    for (const id in window.productList) {
+        if (idInList.indexOf(parseInt(id)) >= 0) {
+            continue;
+        }
+        let product = window.productList[id];
+        let div = Common.createDivProductSlider(product);
+        outer.appendChild(div);
+    }
+};
+

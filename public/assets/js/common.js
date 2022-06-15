@@ -94,7 +94,7 @@ class Common {
             alert(message);
             return;
         }
-        new SystemMessage(SystemMessage[messageType], message);
+        new SystemMessage(SystemMessage(messageType, message));
     };
 
     static parseJSON(input) {
@@ -262,9 +262,13 @@ class Common {
         spanPriceOuter.className = 'price';
         a.appendChild(spanPriceOuter);
 
+        let priceDecimal = product.priceDecimal.toString();
+        if (priceDecimal.length < 2) {
+            priceDecimal = `${priceDecimal}0`;
+        }
         let spanPrice = document.createElement('span');
         spanPrice.className = 'currency';
-        spanPrice.innerText = `$${product.price}.${product.priceDecimal}`;
+        spanPrice.innerText = `$${product.price}.${priceDecimal}`;
         spanPriceOuter.appendChild(spanPrice);
 
         let p = document.createElement('p');
@@ -359,4 +363,57 @@ class Common {
             }
         });
     };
-}
+
+    static runScript() {
+        let scriptList = ['jquery-3.6.0.min.js', 'migrate.js', 'library.js', 'aos.js', 'script.js?ver=1.0.2'];
+        for (let i = 0; i < scriptList.length; i++) {
+            let script = document.createElement("script");
+            script.setAttribute("type", "text/javascript");
+            script.setAttribute("src", `assets/js/${scriptList[i]}`);
+            document.getElementsByTagName("head")[0].appendChild(script);
+        }
+    };
+
+    static createDivProductSlider(product) {
+        let parent = document.createElement('div');
+        parent.className = 'product-item';
+
+        let a = document.createElement('a');
+        a.setAttribute('href', `product-content.html?id=${product.id}`);
+        parent.appendChild(a);
+
+        let firstImage = product.imageList[0];
+        let spanFirstPhoto = document.createElement('span');
+        spanFirstPhoto.className = 'st-photo';
+        spanFirstPhoto.style.backgroundImage = `url('assets/upload/product/${firstImage.id}.${firstImage.extension}')`;
+        a.appendChild(spanFirstPhoto);
+
+        let secondImage = firstImage;
+        if (product.imageList.length > 1) {
+            secondImage = product.imageList[1];
+        }
+        let spanSecondPhoto = document.createElement('span');
+        spanSecondPhoto.className = 'nd-photo';
+        spanSecondPhoto.style.backgroundImage = `url('assets/upload/product/${secondImage.id}.${secondImage.extension}')`;
+        a.appendChild(spanSecondPhoto);
+
+        let priceDecimal = product.priceDecimal.toString();
+        if (priceDecimal.length < 2) {
+            priceDecimal = `${priceDecimal}0`;
+        }
+        let spanPriceOuter = document.createElement('span');
+        spanPriceOuter.className = 'price';
+        a.appendChild(spanPriceOuter);
+        let spanPrice = document.createElement('span');
+        spanPrice.className = 'currency';
+        spanPrice.innerText = `$${product.price}.${priceDecimal}`;
+        spanPriceOuter.appendChild(spanPrice);
+
+        let p = document.createElement('p');
+        p.className = 'product-name';
+        p.innerText = product.name;
+        a.appendChild(p);
+
+        return parent;
+    };
+};

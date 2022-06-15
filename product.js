@@ -62,8 +62,9 @@ module.exports = function (app) {
                 let priceDecimal = product.priceDecimal;
                 let availability = product.availability;
                 let priority = product.priority;
+                let searchText = product.searchText;
                 category.productList[id] = {
-                    id, name, description, price, priceDecimal, availability, priority,
+                    id, name, description, price, priceDecimal, availability, priority, searchText,
                     imageList: productImageList[id],
                 };
                 product.categoryName = category.name;
@@ -97,8 +98,9 @@ module.exports = function (app) {
             let id = category.id;
             let name = category.name;
             let priority = category.priority;
+            let searchText = common.toLowerCaseNonAccentVietnamese(category.name);
             categoryList[id] = {
-                id, name, priority,
+                id, name, priority, searchText,
             };
         }
         return { result: true, categoryList, };
@@ -134,8 +136,10 @@ module.exports = function (app) {
             let availability = product.availability;
             let priority = product.priority;
             let categoryId = product.category;
+            let searchText =
+                `${common.toLowerCaseNonAccentVietnamese(name)} ${common.toLowerCaseNonAccentVietnamese(description)}`
             productList[id] = {
-                id, name, description, price, priceDecimal, availability, priority, categoryId,
+                id, name, description, price, priceDecimal, availability, priority, categoryId, searchText,
             };
         }
         return { result: true, productList, };

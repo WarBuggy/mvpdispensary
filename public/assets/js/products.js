@@ -34,8 +34,8 @@ function createParam() {
     }
     let searchParam = Common.getURLParameter('search');
     if (searchParam != null) {
-        param.search = searchParam;
-        param.titleText = 'DANH SÁCH SẢN PHẨM';
+        param.search = Common.toLowerCaseNonAccentVietnamese(searchParam);
+        param.titleText = 'KẾT QUẢ TÌM KIẾM';
         return param;
     }
     param.titleText = 'TẤC CẢ SẢN PHẨM';
@@ -49,13 +49,17 @@ function populateProductList(param) {
     }
     divParent.innerHTML = '';
 
-    for (const categoryId in window.categoryList) {
+    let list = window.categoryList;
+    if (param.search != null) {
+        list = Common.search(param.search);
+    }
+    for (const categoryId in list) {
         if (param.category != null) {
             if (param.category != categoryId) {
                 continue;
             }
         }
-        let category = window.categoryList[categoryId];
+        let category = list[categoryId];
         let hCategoryTitle = document.createElement('h3');
         hCategoryTitle.classList.add('category-title');
         hCategoryTitle.innerText = category.name;

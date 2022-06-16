@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en" style="background: #000000;">
+
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -13,8 +14,36 @@
     <link rel="stylesheet" href="assets/css/style.css?ver=1.0.2">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
+    <!-- COMMON SCRIPT -->
+    <script src="assets/js/backendURL.js?v1.0"></script>
+    <script src="assets/js/common.js?v1.0"></script>
+    <script src="assets/js/cart.js?v0.1"></script>
+    <!-- SCRIPT -->
+    <script>
+        window.addEventListener('load', async function () {
+            Common.addEnterEventForSearch();
 
+            let getProductListResult = await Common.getProductList();
+            if (!getProductListResult.result) {
+                this.alert(getProductListResult.message);
+                return;
+            }
+            window.categoryList = getProductListResult.categoryList;
+            window.productList = getProductListResult.productList;
+
+            let ulCategory = document.getElementById('liProduct').childNodes[5];
+            if (ulCategory == null) {
+                return;
+            }
+            ulCategory.style['margin-top'] = '20px';
+            ulCategory.innerHTML = '';
+            Common.populateCategoryMenuItem(ulCategory, 'products.html?cat=');
+
+            Common.runScript();
+        });
+    </script>
 </head>
+
 <body class="no-js">
     <div class="loader d-flex">
         <div class="loader-content aligncenter">
@@ -22,7 +51,7 @@
             <p>e-cigarettes, e-liquids, vape kits &amp; pens</p>
         </div>
     </div>
-    
+
     <div class="main">
         <header class="header-global">
             <div class="header">
@@ -30,49 +59,11 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-lg-5 col-navigation">
                             <ul class="menu">
-                                <li>
-                                    <span class="mas">BUD</span>
-                                    <a href="products.html">BUD</a>
-                                </li>
-                                <li>
-                                    <span class="mas">CANDY & CHIPS</span>
-                                    <a href="products.html">CANDY & CHIPS</a>
-                                </li>
-                                <li class="menu-item-has-children">
-                                    <span class="mas">OIL THC</span>
-                                    <a>OIL THC</a>
+                                <li class="menu-item-has-children" id="liProduct">
+                                    <span class="mas">DANH MỤC SẢN PHẨM</span>
+                                    <a>DANH MỤC SẢN PHẨM</a>
                                     <ul>
-                                        <li><a href="products.html">BUDDIES CANNABIS OIL</a></li>
-                                        <li><a href="products.html">BUDHDA VAPE</a></li>
-                                        <li><a href="products.html">EUREKA VAPER</a></li>
-                                        <li><a href="products.html">HÃNG KUVARNA</a></li>
-                                        <li><a href="products.html">STIIIZY</a></li>
                                     </ul>
-                                </li>
-                                <li class="d-block d-lg-none menu-item-has-children">
-                                    <span class="mas">SALE</span>
-                                    <a>SALE</a>
-                                    <ul>
-                                        <li><a href="countdown.html">COUNTDOWN EVENTS</a></li>
-                                        <li><a href="products.html">SẢN PHẨM GIẢM GIÁ</a></li>
-                                    </ul>
-                                </li>
-                                <li class="d-block d-lg-none active">
-                                    <span class="mas">THANH TOÁN BUSD/USDT</span>
-                                    <a href="payment.html">THANH TOÁN BUSD/USDT</a>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <span class="mas">BLOG</span>
-                                    <a href="blog-list.html">BLOG</a>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <form class="searchform">
-                                        <input class="search" type="search" name="search" placeholder="Tìm kiếm">
-                                        <img src="assets/upload/search.svg" alt="Tìm kiếm">
-                                    </form>
-                                </li>
-                                <li class="d-block d-lg-none">
-                                    <a class="tool-countdown" href="countdown.html"></a>
                                 </li>
                             </ul>
                         </div>
@@ -86,21 +77,9 @@
                         <!-- /.col -->
                         <div class="col-12 col-lg-5">
                             <ul class="menu nd-menu">
-                                <li class="menu-item-has-children">
-                                    <span class="mas">SALE</span>
-                                    <a>SALE</a>
-                                    <ul>
-                                        <li><a href="countdown.html">COUNTDOWN EVENTS</a></li>
-                                        <li><a href="products.html">SẢN PHẨM GIẢM GIÁ</a></li>
-                                    </ul>
-                                </li>
                                 <li class="active">
                                     <span class="mas">THANH TOÁN BUSD/TUSD</span>
                                     <a href="payment.html">THANH TOÁN BUSD/TUSD</a>
-                                </li>
-                                <li>
-                                    <span class="mas">BLOG</span>
-                                    <a href="blog-list.html">BLOG</a>
                                 </li>
                             </ul>
                         </div>
@@ -114,58 +93,80 @@
         </header>
         <div class="spanning aos-animation">
             <div class="blog-content-title">
-                    <div class="home-hero-item window-height">
-                        <div class="home-hero-item-background" style="background-image: url('assets/upload/payment.jpeg');"></div>
-                        <div class="container">
-                            <div class="row window-height">
-                                <div class="col-12">
-                                    <div class="title content">
-                                        <strong class="blog">HƯỚNG DẪN THANH TOÁN BẰNG BUSD/TUSD</strong>
-                                        <h1 class="aligncenter"><strong>MVPDispensary<br></strong></h1>
-                                        <h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie.</h2>
-                                    </div>
-                                    <!-- /.title -->
-                                </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
-                        </div>
-                        <!-- /.container -->
+                <div class="home-hero-item window-height">
+                    <div class="home-hero-item-background" style="background-image: url('assets/upload/payment.jpeg');">
                     </div>
                     <div class="container">
-                        <div class="row">
+                        <div class="row window-height">
                             <div class="col-12">
-                                <div class="content">
-                                    <div class="wysiwyg">
-                                        <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie.</p>
-
-                                        <img class="aligncenter" src="assets/upload/blog-content-image.png" alt="Tinh dầu Vape CBD là gì?">
-
-                                        <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie.</p>
-                                        <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie.</p>
-                                        <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie.</p>
-
-                                    </div>
-                                    <!-- /.wysiwyg -->
+                                <div class="title content">
+                                    <strong class="blog">HƯỚNG DẪN THANH TOÁN BẰNG BUSD/TUSD</strong>
+                                    <h1 class="aligncenter"><strong>MVPDispensary<br></strong></h1>
+                                    <h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+                                        euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
+                                        minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut
+                                        aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in
+                                        vulputate velit esse molestie.</h2>
                                 </div>
-                                <!-- /.content -->
+                                <!-- /.title -->
                             </div>
                             <!-- /.col -->
                         </div>
                         <!-- /.row -->
                     </div>
-                    <!-- /.home-hero-item -->
+                    <!-- /.container -->
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="content">
+                                <div class="wysiwyg">
+                                    <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
+
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+                                        euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
+                                        minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut
+                                        aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in
+                                        vulputate velit esse molestie.</p>
+
+                                    <img class="aligncenter" src="assets/upload/blog-content-image.png"
+                                        alt="Tinh dầu Vape CBD là gì?">
+
+                                    <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
+
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+                                        euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
+                                        minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut
+                                        aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in
+                                        vulputate velit esse molestie.</p>
+                                    <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
+
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+                                        euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
+                                        minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut
+                                        aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in
+                                        vulputate velit esse molestie.</p>
+                                    <h2>Chuyển BUSD/USDT Bep20 đến địa chỉ ví:</h2>
+
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+                                        euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
+                                        minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut
+                                        aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in
+                                        vulputate velit esse molestie.</p>
+
+                                </div>
+                                <!-- /.wysiwyg -->
+                            </div>
+                            <!-- /.content -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.home-hero-item -->
             </div>
             <!-- /.blog-content-title -->
-            
+
         </div>
         <!-- /.spanning-columns -->
     </div>
@@ -173,22 +174,33 @@
     <div class="toolbar">
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col bottom-bar">
                     <a href="#" class="navigation-toggle"><span class="navigation-toggle-icon"></span></a>
-                    <form class="searchform d-none d-lg-flex">
-                        <input class="search" type="search" name="search" placeholder="Tìm kiếm">
-                        <img src="assets/upload/search.svg" alt="Tìm kiếm">
-                    </form>
-                    <a href="countdown.html" class="tool-countdown d-none d-lg-block"></a>
+                    <div class="search-outer">
+                        <input id='inputSearch' class="search" type="search" name="search" placeholder="Tìm kiếm">
+                        <img class='search-glass' src="assets/upload/search.svg" alt="Tìm kiếm"
+                            onclick="Common.searchByKeyword()">
+                    </div>
                     <ul class="toolbar-social social">
-                        <li><a href="#"><img src="assets/upload/flag-for-us-outlying-islands-svgrepo-com.svg" alt="English"></a></li>
-                        <li><a href="#"><img src="assets/upload/flag-for-vietnam-svgrepo-com.svg" alt="Tiếng Việt"></a></li>
-                        <li><a href="#"><img class="light-on" src="assets/upload/lighter-svgrepo-com.svg" alt="Bật đèn"></a></li>
-                        <li><a href="https://t.me/leeteetee" target="_blank"><img src="assets/upload/telegram-logo-svgrepo-com.svg" alt="Liên hệ qua Telegram"></a></li>
-                        <li><a href="https://www.messenger.com/t/100077012441329/" target="_blank"><img src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger"></a></li>
-
-                        <li><a href="account.html"><img src="assets/upload/user-svgrepo-com.svg" alt="Tài khoản"></a></li>
-                        <li><a href="cart.html"><img src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng"></a></li>
+                        <li>
+                            <a href="#">
+                                <img class="light-on" src="assets/upload/lighter-svgrepo-com.svg" alt="Bật đèn">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://t.me/leeteetee" target="_blank">
+                                <img src="assets/upload/telegram-logo-svgrepo-com.svg" alt="Liên hệ qua Telegram">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.messenger.com/t/100077012441329/" target="_blank">
+                                <img src="assets/upload/messenger-svgrepo-com.svg" alt="Liên hệ qua Messenger">
+                            </a>
+                        </li>
+                        <li>
+                            <img id='imgCart' src="assets/upload/cart-fill-svgrepo-com.svg" alt="Giỏ hàng"
+                                style="cursor: pointer;" onclick="showCart()">
+                        </li>
                     </ul>
                 </div>
                 <!-- /.col -->
@@ -216,9 +228,9 @@
                     </div>
                     <!-- /.col -->
                     <div class="d-none d-lg-block col-lg-2 aligncenter">
-                            <a class="footer-logo" href="home.html">
-                                <img src="assets/upload/logo.png" alt="Vape Store Online">
-                            </a>
+                        <a class="footer-logo" href="home.html">
+                            <img src="assets/upload/logo.png" alt="Vape Store Online">
+                        </a>
                         <!-- /.footer-infoblock -->
                     </div>
                     <!-- /.col -->
@@ -236,12 +248,6 @@
         </div>
         <!-- /.footer-wrap -->
     </footer>
-
-    
-    <script src="assets/js/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/migrate.js"></script>
-    <script src="assets/js/library.js"></script>
-    <script src="assets/js/aos.js"></script>
-    <script src="assets/js/script.js?ver=1.0.2"></script>
 </body>
+
 </html>

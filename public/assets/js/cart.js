@@ -1,3 +1,10 @@
+window.addEventListener('load', async function () {
+    let cartItemList = getItemList();
+    if (Object.keys(cartItemList).length > 0) {
+        showImgCartWithItem();
+    }
+});
+
 window.showCart = function () {
     let cartItemList = getItemList();
     createCartPopup(cartItemList);
@@ -88,6 +95,7 @@ function createCartPopup(cartItemList) {
     divOuter.appendChild(divNoItem);
     if (Object.keys(cartItemList).length < 1) {
         divNoItem.style.display = 'block';
+        showImgCartWithItem(false);
         return;
     }
 
@@ -220,6 +228,7 @@ function createCartPopup(cartItemList) {
                 document.getElementById('divCartNoItem').style.display = 'block';
                 document.getElementById('divGrid').style.display = 'none';
                 document.getElementById('divCheckout').style.display = 'none';
+                showImgCartWithItem(false);
                 return;
             }
             updateTotal(cartItemList);
@@ -341,6 +350,9 @@ function updateTotal(cartItemList) {
         total = total + subTotal;
     }
     document.getElementById('divTotal').innerHTML = `<b>Total</b>: $${total.toFixed(2)}`;
+    if (total > 0) {
+        showImgCartWithItem();
+    }
 };
 
 function validateCustomerDetail() {
@@ -414,6 +426,7 @@ async function makeInvoice(sendData) {
         let response = await Common.sendToBackend('payment/make', sendData);
         window.location.href = response.invoiceLink;
         Common.saveToStorage({ cartItemList: '', });
+        showImgCartWithItem(fasle);
     } catch (error) {
         alert(error);
     }
@@ -431,4 +444,12 @@ function loadCustomerDetailFromStorage() {
 
     let customerNote = Common.loadFromStorage('customerNote');
     document.getElementById('inputCustomerNote').value = customerNote || '';
-};  
+};
+
+function showImgCartWithItem(withItem) {
+    if (withItem == null || withItem == true) {
+        document.getElementById('imgCart').src = 'assets/upload/cart-with-item.svg';
+        return;
+    }
+    document.getElementById('imgCart').src = 'assets/upload/cart-fill-svgrepo-com.svg';
+};

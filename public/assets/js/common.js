@@ -368,13 +368,14 @@ class Common {
         });
     };
 
-    static runScript() {
+    static async runScript() {
         let scriptList = ['jquery-3.6.0.min.js', 'migrate.js', 'library.js', 'aos.js', 'script.js?ver=1.0.2'];
         for (let i = 0; i < scriptList.length; i++) {
             let script = document.createElement("script");
             script.setAttribute("type", "text/javascript");
             script.setAttribute("src", `assets/js/${scriptList[i]}`);
             document.getElementsByTagName("head")[0].appendChild(script);
+            await Common.sleep(window.SCRIPT_LOAD_DELAY || 1000);
         }
     };
 
@@ -419,5 +420,13 @@ class Common {
         a.appendChild(p);
 
         return parent;
+    };
+
+    static sleep(ms) {
+        return new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve();
+            }, ms);
+        });
     };
 };

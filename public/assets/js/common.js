@@ -128,6 +128,10 @@ class Common {
         }
     };
 
+    static isNumeric(input) {
+        return !isNaN(parseFloat(input)) && isFinite(input);
+    };
+
     //#region Copy to clipboard
     // copied from https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
     static copyTextToClipboard(text, callback) {

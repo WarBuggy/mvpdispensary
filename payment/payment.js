@@ -4,6 +4,7 @@ const db = require('../db/db.js');
 const axios = require('axios');
 const crypto = require('crypto');
 const mailer = require('../mailer/mailer.js');
+const otpGenerator = require('otp-generator');
 
 module.exports = function (app) {
     //#region /payment/make
@@ -674,7 +675,7 @@ module.exports = function (app) {
             validTime: paymentConfig.nowspayment.otpAvailableMinute,
             otpMinTime: paymentConfig.nowspayment.otpMinWaitInMinute,
         };
-        mailer.sendOTPPaymentToCustomer(params);
+        mailer.sendOTPPaymentToCustomer(mailParams);
         let resJson = {
             success: true,
             result: 0,
@@ -713,10 +714,12 @@ module.exports = function (app) {
     };
 
     function generateOTPForPayment() {
-        let otp = '';
-        for (let i = 0; i < paymentConfig.nowspayment.otpLength; i++) {
-            otp = otp + crypto.randomInt(0, 10);
+        let generatorParams = {
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
+            specialChars: false,
         }
+        let otp = otpGenerator.generate(6, generatorParams);
         return otp;
     };
 

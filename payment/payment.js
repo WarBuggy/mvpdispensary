@@ -685,7 +685,7 @@ module.exports = function (app) {
     });
 
     async function checkOTPLimitOfIP(requestIp) {
-        let sql = 'COUNT(`id`) AS `count` FROM `mvpdispensary_data`.`otp_payment` WHERE '
+        let sql = 'SELECT COUNT(`id`) AS `count` FROM `mvpdispensary_data`.`otp_payment` WHERE '
             + '`ip` = ? AND `allow_new_otp_after` > NOW()';
         let logInfo = {
             username: 99,

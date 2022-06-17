@@ -500,7 +500,7 @@ function showImgCartWithItem(withItem) {
     document.getElementById('imgCart').src = 'assets/upload/cart-fill-svgrepo-com.svg';
 };
 
-function sendEmailCode(email) {
+async function sendEmailCode(email) {
     let sendData = {
         email,
     };

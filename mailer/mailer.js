@@ -33,7 +33,7 @@ module.exports = {
     sendPartiallyPaidNotifEmailToCustomer: function (params) {
         let content = `Xin chào ${params.customerName},<br>`
             + 'Xin gửi đến quý khách lời chúc sức khỏe và may mắn!<br>'
-            + `MVP Dispensay xin chân thành cảm ơn quý khách đã tin tưởng và mua sắm tại mvpdispensary.com. Chúng tôi luôn cố gắng phấn đấu để đem đến cho quý khách những trải nghiệm trực tuyến tốt nhất có thể.`
+            + `MVP Dispensay xin chân thành cảm ơn quý khách đã tin tưởng và mua sắm tại <a href="mvpsmoke.shop">MVP Dispensary</a>. Chúng tôi luôn cố gắng phấn đấu để đem đến cho quý khách những trải nghiệm trực tuyến tốt nhất có thể.`
             + '<br>'
             + `Chúng tôi vừa nhận được thanh toán từ quý khách cho 01 đơn hàng. Tuy nhiên, số tiền mà chúng tôi nhận được lại <b>không đủ để hoàn tất</b> việc thanh toán cho đơn hàng này. Cụ thể như sau:<br>`
             + createPaymentContent(params)
@@ -44,7 +44,7 @@ module.exports = {
             + 'Chúng tôi sẽ liên hệ với quý khách trong vòng 24 tiếng đồng hồ để đề nghị phương hướng giải quyết cụ thể. Nếu cần thiết, quý khách có thể liên hệ với chúng tôi qua những phương thức sau:<br>'
             + createContactContent()
             + '<br>'
-            + 'Chúng tôi luôn cố gắng để trải nghiệm mua sắp tại mvpdispensary.com luôn được hoàn hảo. Tuy nhiên đôi lúc vẫn nảy sinh vấn đề. '
+            + 'Chúng tôi luôn cố gắng để trải nghiệm mua sắp tại <a href="mvpsmoke.shop">MVP Dispensary</a> luôn được hoàn hảo. Tuy nhiên đôi lúc vẫn nảy sinh vấn đề. '
             + 'Xin quý khách vui lòng thông cảm và hợp lực cùng chúng tôi để vấn đề được giải quyết thỏa đáng. Xin chân thành cảm ơn quý khách!'
             + '<br>'
             + 'Trân trọng,'
@@ -53,7 +53,7 @@ module.exports = {
     sendPaymentConfirmEmailToCustomer: function (params) {
         let content = `Xin chào ${params.customerName},<br>`
             + 'Xin gửi đến quý khách lời chúc sức khỏe và may mắn!<br>'
-            + `MVP Dispensay xin chân thành cảm ơn quý khách đã tin tưởng và mua sắm tại mvpdispensary.com. Chúng tôi luôn cố gắng phấn đấu để đem đến cho quý khách những trải nghiệm trực tuyến tốt nhất có thể.`
+            + `MVP Dispensay xin chân thành cảm ơn quý khách đã tin tưởng và mua sắm tại <a href="mvpsmoke.shop">MVP Dispensary</a>. Chúng tôi luôn cố gắng phấn đấu để đem đến cho quý khách những trải nghiệm trực tuyến tốt nhất có thể.`
             + '<br>'
             + `Chúng tôi vừa nhận được thanh toán đủ từ quý khách cho 01 đơn hàng. Cụ thể như sau:<br>`
             + createPaymentContent(params)
@@ -64,10 +64,15 @@ module.exports = {
             + 'Chúng tôi sẽ tiến hàng xử lý đơn hàng và chuyển giao đến cho quý khách trong thời gian sớm nhất có thể. Nếu cần thiết, quý khách có thể liên hệ với chúng tôi qua những phương thức sau:<br>'
             + createContactContent()
             + '<br>'
-            + 'Chúng tôi luôn cố gắng để trải nghiệm mua sắp tại mvpdispensary.com luôn được hoàn hảo. Xin chân thành cảm ơn quý khách!'
+            + 'Chúng tôi luôn cố gắng để trải nghiệm mua sắp tại <a href="mvpsmoke.shop">MVP Dispensary</a> luôn được hoàn hảo. Xin chân thành cảm ơn quý khách!'
             + '<br>'
             + 'Trân trọng,'
         sendMail(content, true, params.customerEmail, `Đơn hàng đã được thanh toán đầy đủ (${params.orderId})`, 'notify customer about a fully paid order');
+    },
+
+    sendOTPPaymentToCustomer: function (params) {
+        let content = createOTPPaymentContent(params);
+        sendMail(content, true, params.email, `Mã xác nhận email từ MVP Dispensary`, 'send OTP for payment to customer');
     },
 };
 
@@ -208,3 +213,16 @@ function createContactContent() {
         + '</table>';
     return content;
 };
+
+function createOTPPaymentContent(params) {
+    let content = '<a href="mvpsmoke.shop">MVP Dispensary</a> vừa nhận được 1 yêu cầu xác nhận email này.<br>'
+        + 'Xin vui lòng nhập 6 con số sau vào ô "Mã xác nhận" để hoàn tất việc thanh toán.<br><br>'
+        + `<h3>${params.otp}</h3><br><br>`
+        + `Mã xác nhận chỉ có giá trị trong vòng ${params.validTime} phút. Nếu quá thời gian trên, quý khách sẽ cần `
+        + 'yêu cầu lại mã mới để hoàn tất việc xác nhận.<br>'
+        + `Xin lưu ý: Quý khách chỉ có thể gửi mã xác nhận mỗi ${params.otpMinTime} phút. `
+        + 'Mỗi lần thanh toán, quý khách cần xác nhận lại lần nữa.<br>'
+        + 'Xin vui lòng bỏ qua nếu quý khách không phải là người nhận chủ đích của email này!<br><br>'
+        + 'Xin trân trọng kính chào,<br>MVP Dispensary';
+    return content;
+}; 

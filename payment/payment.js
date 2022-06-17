@@ -629,4 +629,116 @@ module.exports = function (app) {
         return { result: true, orderInfo, };
     };
     //#endregion
+
+    //#region OTP for payment email
+    app.post('/email/code', async function (request, response) {
+        let requestIp = common.getReadableIP(request);
+        let purpose = 'create an OTP for payment email';
+        let errorString = `${requestIp} Error when ${purpose}:`;
+        common.consoleLog(`${requestIp} Requested to ${purpose}.`);
+
+        let email = (request.body.email || '').trim();
+        if (!common.validateEmail(email)) {
+            let errorCode = 600;
+            common.consoleLogError(`${errorString} Received invalid email.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Email không hợp lệ' });
+            return;
+        }
+
+        let checkOTPLimitOfIPResult = await checkOTPLimitOfIP(requestIp);
+        if (!checkOTPLimitOfIPResult.result) {
+            let errorCode = 610 + checkOTPLimitOfIPResult.errorCode;
+            common.consoleLogError(`${errorString} ${checkOTPLimitOfIPResult.errorMessage}.`);
+            response.status(errorCode);
+            let message = 'Lỗi cơ sở dữ liệu';
+            if (checkOTPLimitOfIPResult.errorCode == 1) {
+                message = 'Xin vui lòng chờ 1 thời gian trước khi yêu cầu OTP mới!';
+            }
+            response.json({ success: false, message, });
+            return;
+        }
+        let otp = generateOTPForPayment();
+        let createNewOTPResult = await createNewOTP(requestIp, email, otp);
+        if (!createNewOTPResult.result) {
+            let errorCode = 620 + createNewOTPResult.errorCode;
+            common.consoleLogError(`${errorString} ${createNewOTPResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'Không thể tạo OTP để kiểm tra email', });
+            return;
+        }
+
+        let mailParams = {
+            otp,
+            email,
+            validTime: paymentConfig.nowspayment.otpAvailableMinute,
+            otpMinTime: paymentConfig.nowspayment.otpMinWaitInMinute,
+        };
+        mailer.sendOTPPaymentToCustomer(params);
+        let resJson = {
+            success: true,
+            result: 0,
+            otpMinTime: paymentConfig.nowspayment.otpMinWaitInMinute,
+        };
+        response.json(resJson);
+        common.consoleLog(`${requestIp} Request to ${purpose} was successfully handled.`);
+    });
+
+    async function checkOTPLimitOfIP(requestIp) {
+        let sql = 'COUNT(`id`) AS `count` FROM `mvpdispensary_data`.`otp_payment` WHERE '
+            + '`ip` = ? AND `allow_new_otp_after` > NOW()';
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Check OTP limit of an IP address',
+        };
+        let params = [requestIp];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        if (result.sqlResults[0].count != 0) {
+            return {
+                result: false,
+                errorCode: 1,
+                errorMessage: `Cannot request OTP yet`,
+            };
+        }
+        return { result: true };
+    };
+
+    function generateOTPForPayment() {
+        let otp = '';
+        for (let i = 0; i < paymentConfig.nowspayment.otpLength; i++) {
+            otp = otp + crypto.randomInt(0, 10);
+        }
+        return otp;
+    };
+
+    async function createNewOTP(requestIp, email, otp) {
+        let sql = 'INSERT INTO `mvpdispensary_data`.`otp_payment` (`ip`, `email`, `otp`, `expired`, `allow_new_otp_after`) '
+            + `VALUES (?, ?, ?, DATE_ADD(NOW, INTERVAL ${paymentConfig.nowspayment.otpAvailableMinute} MINUTE), ?), `
+            + `DATE_ADD(NOW, INTERVAL ${paymentConfig.nowspayment.otpMinWaitInMinute} MINUTE))`;
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Check OTP limit of an IP address',
+        };
+        let params = [requestIp, email, otp];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        return { result: true, };
+    };
 };

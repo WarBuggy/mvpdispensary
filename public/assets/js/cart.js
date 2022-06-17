@@ -90,7 +90,7 @@ function createCartPopup(cartItemList) {
 
     let divNoItem = document.createElement('div');
     divNoItem.id = 'divCartNoItem';
-    divNoItem.classList = 'cart-no-item';
+    divNoItem.className = 'cart-no-item';
     divNoItem.innerText = 'Quý khách chưa chọn món hàng nào.\nXin vui lòng xem qua các sản phẩm của chúng tôi và nhấn nút cho vào giỏ hàng!';
     divOuter.appendChild(divNoItem);
     if (Object.keys(cartItemList).length < 1) {
@@ -242,7 +242,7 @@ function createCartPopup(cartItemList) {
 function createDivCheckout(divOuter, cartItemList) {
     let divCheckout = document.createElement('div');
     divCheckout.id = 'divCheckout';
-    divCheckout.classList = 'cart-checkout';
+    divCheckout.className = 'cart-checkout';
     divOuter.appendChild(divCheckout);
 
     let divTotal = document.createElement('div');
@@ -263,13 +263,13 @@ function createDivCheckout(divOuter, cartItemList) {
 
     let inputCustomerName = document.createElement('input');
     inputCustomerName.id = 'inputCustomerName';
-    inputCustomerName.classList = 'cart-checkout-input';
+    inputCustomerName.className = 'cart-checkout-input';
     divCheckout.appendChild(inputCustomerName);
 
     let divCustomerNameValidation = document.createElement('div');
     divCustomerNameValidation.id = 'divCustomerNameValidation';
     divCustomerNameValidation.className = 'cart-checkout-validation';
-    divCustomerNameValidation.innerText = 'Họ tên người nhận là bắt buộc';
+    divCustomerNameValidation.innerText = 'Họ tên người nhận là bắt buộc.';
     divCheckout.appendChild(divCustomerNameValidation);
 
     let divCustomerEmailLabel = document.createElement('div');
@@ -279,14 +279,53 @@ function createDivCheckout(divOuter, cartItemList) {
 
     let inputCustomerEmail = document.createElement('input');
     inputCustomerEmail.id = 'inputCustomerEmail';
-    inputCustomerEmail.classList = 'cart-checkout-input';
+    inputCustomerEmail.className = 'cart-checkout-input';
     divCheckout.appendChild(inputCustomerEmail);
 
     let divCustomerEmailValidation = document.createElement('div');
     divCustomerEmailValidation.id = 'divCustomerEmailValidation';
     divCustomerEmailValidation.className = 'cart-checkout-validation';
-    divCustomerEmailValidation.innerText = 'Email đúng để liên lạc là bắt buộc';
+    divCustomerEmailValidation.innerText = 'Email đúng để liên lạc là bắt buộc.';
     divCheckout.appendChild(divCustomerEmailValidation);
+
+    let divSendCode = document.createElement('div');
+    divSendCode.id = 'divSendCode';
+    divSendCode.innerText = 'Gửi mã xác nhận đến email!';
+    divSendCode.className = 'cart-send-code';
+    divCheckout.appendChild(divSendCode);
+    divSendCode.onclick = function () {
+        let divCustomerEmailValidation = document.getElementById('divCustomerEmailValidation');
+        divCustomerEmailValidation.style.display = 'none';
+        let email = document.getElementById('inputCustomerEmail').value;
+        if (!Common.validateEmail(email)) {
+            divCustomerEmailValidation.style.display = 'block';
+            return;
+        }
+        sendEmailCode(email);
+    };
+
+    let divSendCodeSuccess = document.createElement('div');
+    divSendCodeSuccess.id = 'divSendCodeSuccess';
+    divSendCodeSuccess.className = 'cart-send-code-success';
+    divSendCodeSuccess.innerText = 'Xin kiểm email để nhận mã xác nhận!';
+    divCheckout.appendChild(divSendCodeSuccess);
+
+
+    let divCodeLabel = document.createElement('div');
+    divCodeLabel.className = 'cart-checkout-label';
+    divCodeLabel.innerText = 'Mã xác nhận(*)';
+    divCheckout.appendChild(divCodeLabel);
+
+    let inputCode = document.createElement('input');
+    inputCode.id = 'inputCode';
+    inputCode.className = 'cart-checkout-input';
+    divCheckout.appendChild(inputCode);
+
+    let divCodeValidation = document.createElement('div');
+    divCodeValidation.id = 'divCodeValidation';
+    divCodeValidation.className = 'cart-checkout-validation';
+    divCodeValidation.innerText = 'Mã xác nhận không đúng.';
+    divCheckout.appendChild(divCodeValidation);
 
     let divCustomerAddressLabel = document.createElement('div');
     divCustomerAddressLabel.className = 'cart-checkout-label';
@@ -295,13 +334,13 @@ function createDivCheckout(divOuter, cartItemList) {
 
     let inputCustomerAddress = document.createElement('textarea');
     inputCustomerAddress.id = 'inputCustomerAddress';
-    inputCustomerAddress.classList = 'cart-checkout-textarea';
+    inputCustomerAddress.className = 'cart-checkout-textarea';
     divCheckout.appendChild(inputCustomerAddress);
 
     let divCustomerAddressValidation = document.createElement('div');
     divCustomerAddressValidation.id = 'divCustomerAddressValidation';
     divCustomerAddressValidation.className = 'cart-checkout-validation';
-    divCustomerAddressValidation.innerText = 'Địa chỉ nhận hàng là bắt buộc';
+    divCustomerAddressValidation.innerText = 'Địa chỉ nhận hàng là bắt buộc.';
     divCheckout.appendChild(divCustomerAddressValidation);
 
     let divCustomerNoteLabel = document.createElement('div');
@@ -311,7 +350,7 @@ function createDivCheckout(divOuter, cartItemList) {
 
     let inputCustomerNote = document.createElement('textarea');
     inputCustomerNote.id = 'inputCustomerNote';
-    inputCustomerNote.classList = 'cart-checkout-textarea';
+    inputCustomerNote.className = 'cart-checkout-textarea';
     divCheckout.appendChild(inputCustomerNote);
 
     let divPay = document.createElement('div');
@@ -376,6 +415,12 @@ function validateCustomerDetail() {
     }
     Common.saveToStorage({ customerEmail });
 
+    let code = document.getElementById('inputCode').value;
+    if (code.length != 6) {
+        document.getElementById('divCodeValidation').style.display = 'block';
+        allIsOk = false;
+    }
+
     let customerAddress = document.getElementById('inputCustomerAddress').value;
     if (customerAddress.trim() == '') {
         document.getElementById('divCustomerAddressValidation').style.display = 'block';
@@ -396,6 +441,7 @@ function validateCustomerDetail() {
         email: customerEmail,
         address: customerAddress,
         note: customerNote,
+        code,
     };
 };
 
@@ -452,4 +498,21 @@ function showImgCartWithItem(withItem) {
         return;
     }
     document.getElementById('imgCart').src = 'assets/upload/cart-fill-svgrepo-com.svg';
+};
+
+function sendEmailCode(email) {
+    let sendData = {
+        email,
+    };
+    try {
+        let response = await Common.sendToBackend('email/code', sendData);
+        document.getElementById('divSendCode').style.display = 'none';
+        document.getElementById('divSendCodeSuccess').style.display = 'block';
+        window.setTimeout(function () {
+            document.getElementById('divSendCode').style.display = 'block';
+            document.getElementById('divSendCodeSuccess').style.display = 'none';
+        }, response.otpMinTime * 60 * 1000);
+    } catch (error) {
+        alert(error);
+    }
 };

@@ -4,7 +4,6 @@ const db = require('../db/db.js');
 const axios = require('axios');
 const crypto = require('crypto');
 const mailer = require('../mailer/mailer.js');
-const otpGenerator = require('otp-generator');
 
 module.exports = function (app) {
     //#region /payment/make

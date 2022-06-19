@@ -714,12 +714,11 @@ module.exports = function (app) {
     };
 
     function generateOTPForPayment() {
-        let generatorParams = {
-            lowerCaseAlphabets: false,
-            upperCaseAlphabets: false,
-            specialChars: false,
-        }
-        let otp = otpGenerator.generate(6, generatorParams);
+        let randomString = crypto.randomBytes(200).toString('hex');
+        randomString = randomString.replace(/[a-z]/g, '');
+        let max = randomString.length - 1 - paymentConfig.nowspayment.otpLength;
+        let randomIndex = Math.floor(Math.random() * max);
+        let otp = randomString.substr(randomIndex, paymentConfig.nowspayment.otpLength);
         return otp;
     };
 

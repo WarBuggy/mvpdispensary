@@ -723,8 +723,8 @@ module.exports = function (app) {
 
     async function createNewOTP(requestIp, email, otp) {
         let sql = 'INSERT INTO `mvpdispensary_data`.`otp_payment` (`ip`, `email`, `otp`, `expired`, `allow_new_otp_after`) '
-            + `VALUES (?, ?, ?, DATE_ADD(NOW, INTERVAL ${paymentConfig.nowspayment.otpAvailableMinute} MINUTE), `
-            + `DATE_ADD(NOW, INTERVAL ${paymentConfig.nowspayment.otpMinWaitInMinute} MINUTE))`;
+            + `VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL ${paymentConfig.nowspayment.otpAvailableMinute} MINUTE), `
+            + `DATE_ADD(NOW(), INTERVAL ${paymentConfig.nowspayment.otpMinWaitInMinute} MINUTE))`;
         let logInfo = {
             username: 99,
             sql,

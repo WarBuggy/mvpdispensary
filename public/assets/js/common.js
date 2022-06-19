@@ -12,7 +12,7 @@ class Common {
                             })
                             .catch(function () {
                                 reject('Không đọc được thông tin từ server.\n'
-                                    + 'Xin vui lòng liên hệ admin của hệ thống!');
+                                    + 'Xin vui lòng liên hệ admin của hệ thống! (909)');
                             });
                     } else if (this.status < 600 || this.status >= 900) {
                         reject('Lỗi hệ thống khi xử lý thông tin tại server (' + this.status + ').\n'
@@ -20,11 +20,11 @@ class Common {
                     } else {
                         Common.parseJSON(this['response'])
                             .then(function (parseResult) {
-                                reject(parseResult.message);
+                                reject(`${parseResult.message} (${this.status})`);
                             })
                             .catch(function () {
                                 reject('Không đọc được thông tin từ server.\n'
-                                    + 'Xin vui lòng liên hệ admin của hệ thống!');
+                                    + 'Xin vui lòng liên hệ admin của hệ thống! (909)');
                             });
                     }
                 }

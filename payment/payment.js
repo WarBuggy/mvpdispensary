@@ -20,6 +20,7 @@ module.exports = function (app) {
             note: (request.body.note || '').trim(),
             total: request.body.total || '',
             name: (request.body.name || '').trim(),
+            otp: (request.body.otp || '').trim(),
         }
         let cartString = (request.body.cartString || '').trim();
 
@@ -29,6 +30,16 @@ module.exports = function (app) {
             common.consoleLogError(`${errorString} ${checkInputParamResult.errorMessage}.`);
             response.status(errorCode);
             response.json({ success: false, message: 'Dữ liệu nhận được không hợp lệ' });
+            return;
+        }
+
+        let checkInvoiceRequestOTPResult =
+            await checkInvoiceRequestOTP(inputParams.email, requestIp, inputParams.otp);
+        if (!checkInvoiceRequestOTPResult.result) {
+            let errorCode = 690 + checkInvoiceRequestOTPResult.errorCode;
+            common.consoleLogError(`${errorString} ${checkInvoiceRequestOTPResult.errorMessage}.`);
+            response.status(errorCode);
+            response.json({ success: false, message: 'OTP nhận được không đúng hay không hợp lệ' });
             return;
         }
 
@@ -151,6 +162,20 @@ module.exports = function (app) {
                 result: false,
                 errorCode: 3,
                 errorMessage: 'Missing customer name',
+            };
+        }
+        if (inputParams.otp.length != 6) {
+            return {
+                result: false,
+                errorCode: 4,
+                errorMessage: 'OTP is not of correct length',
+            };
+        }
+        if (!common.isNumeric(inputParams.otp)) {
+            return {
+                result: false,
+                errorCode: 5,
+                errorMessage: 'Invalid OTP',
             };
         }
         return { result: true, };
@@ -738,6 +763,43 @@ module.exports = function (app) {
                 result: false,
                 errorCode: 0,
                 errorMessage: `Database error`,
+            };
+        }
+        return { result: true, };
+    };
+
+    async function checkInvoiceRequestOTP(email, requestIp, otp) {
+        let sql = 'SELECT `otp` FROM `mvpdispensary_data`.`otp_payment` '
+            + 'WHERE `email` = ? AND `ip` = ? AND `expired` > NOW() '
+            + 'ORDER BY `expired` DESC LIMIT 1'
+        let logInfo = {
+            username: 99,
+            sql,
+            userIP: requestIp,
+            purpose: 'Get latest OTP from email and IP',
+        };
+        let params = [email, requestIp];
+        let result = await db.query(logInfo, params);
+        if (result.resultCode != 0) {
+            return {
+                result: false,
+                errorCode: 0,
+                errorMessage: `Database error`,
+            };
+        }
+        if (requestIp.sqlResults.length != 1) {
+            return {
+                result: false,
+                errorCode: 1,
+                errorMessage: `No OTP found (${email}, ${requestIp})`,
+            };
+        }
+        let dbOTP = result.sqlResults[0].otp;
+        if (dbOTP != otp) {
+            return {
+                result: false,
+                errorCode: 2,
+                errorMessage: `OTP does not match (${email}, ${requestIp}, ${otp})`,
             };
         }
         return { result: true, };

@@ -463,6 +463,7 @@ function makeInvoiceInput(cartItemList, validateResult) {
         note: validateResult.note,
         total,
         cartString: part.join('|||'),
+        otp: validateResult.code,
     };
 };
 
@@ -472,7 +473,7 @@ async function makeInvoice(sendData) {
         let response = await Common.sendToBackend('payment/make', sendData);
         window.location.href = response.invoiceLink;
         Common.saveToStorage({ cartItemList: '', });
-        showImgCartWithItem(fasle);
+        showImgCartWithItem(false);
     } catch (errorMessage) {
         alert(errorMessage);
     }

@@ -18,13 +18,15 @@ class Common {
                         reject('Lỗi hệ thống khi xử lý thông tin tại server (' + this.status + ').\n'
                             + 'Xin vui lòng liên hệ admin của hệ thống!');
                     } else {
+                        let status = this.status;
                         Common.parseJSON(this['response'])
                             .then(function (parseResult) {
-                                reject(`${parseResult.message} (${this.status})`);
+                                reject(`${parseResult.message} (${status})`);
                             })
-                            .catch(function () {
+                            .catch(function (error) {
+                                console.log(error);
                                 reject('Không đọc được thông tin từ server.\n'
-                                    + 'Xin vui lòng liên hệ admin của hệ thống! (909)');
+                                    + 'Xin vui lòng liên hệ admin của hệ thống! (910)');
                             });
                     }
                 }
@@ -60,7 +62,7 @@ class Common {
                 let jsonRes = JSON.parse(input);
                 resolve(jsonRes);
             } catch (error) {
-                reject(error.message);
+                reject(error);
             }
         });
     };

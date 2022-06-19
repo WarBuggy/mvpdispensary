@@ -67,6 +67,7 @@ function saveCartItemListToStorage(cartItemList) {
 
 function createCartPopup(cartItemList) {
     let divBackground = document.createElement('div');
+    divBackground.id = 'divCartBackground';
     divBackground.className = 'popup-background';
     document.body.appendChild(divBackground);
 
@@ -84,7 +85,11 @@ function createCartPopup(cartItemList) {
     divClose.className = 'cart-close';
     divClose.innerText = 'Đóng';
     divClose.onclick = function () {
-        document.body.removeChild(divBackground);
+        let thisDivBackground = document.getElementById('divCartBackground');
+        if (thisDivBackground == null) {
+            return;
+        }
+        document.body.removeChild(thisDivBackground);
     };
     divOuter.appendChild(divClose);
 
@@ -476,6 +481,7 @@ async function makeInvoice(sendData) {
         showImgCartWithItem(false);
     } catch (errorMessage) {
         alert(errorMessage);
+        document.getElementById('divOuter').style.display = 'grid';
     }
 };
 

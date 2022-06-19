@@ -787,7 +787,7 @@ module.exports = function (app) {
                 errorMessage: `Database error`,
             };
         }
-        if (requestIp.sqlResults.length != 1) {
+        if (result.sqlResults.length != 1) {
             return {
                 result: false,
                 errorCode: 1,

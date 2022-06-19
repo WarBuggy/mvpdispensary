@@ -7497,5 +7497,6 @@ div.cart-send-code-success {
   font-size: smaller;
   text-align: center;
   grid-column: 1 / span 2;
+  padding: 5px;
   display: none;
 }

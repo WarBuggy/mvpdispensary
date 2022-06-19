@@ -653,7 +653,7 @@ module.exports = function (app) {
             response.status(errorCode);
             let message = 'Lỗi cơ sở dữ liệu';
             if (checkOTPLimitOfIPResult.errorCode == 1) {
-                message = 'Xin vui lòng chờ 1 thời gian trước khi yêu cầu OTP mới!';
+                message = `Xin vui lòng chờ ${paymentConfig.nowspayment.otpMinWaitInMinute} phút trước khi yêu cầu OTP mới!`;
             }
             response.json({ success: false, message, });
             return;

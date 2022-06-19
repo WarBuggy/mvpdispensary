@@ -473,8 +473,8 @@ async function makeInvoice(sendData) {
         window.location.href = response.invoiceLink;
         Common.saveToStorage({ cartItemList: '', });
         showImgCartWithItem(fasle);
-    } catch (error) {
-        alert(error);
+    } catch (errorMessage) {
+        alert(errorMessage);
     }
 };
 
@@ -512,7 +512,7 @@ async function sendEmailCode(email) {
             document.getElementById('divSendCode').style.display = 'block';
             document.getElementById('divSendCodeSuccess').style.display = 'none';
         }, response.otpMinTime * 60 * 1000);
-    } catch (error) {
-        alert(error);
+    } catch (errorMessage) {
+        alert(errorMessage);
     }
 };

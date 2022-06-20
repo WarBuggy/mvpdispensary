@@ -473,15 +473,17 @@ function makeInvoiceInput(cartItemList, validateResult) {
 };
 
 async function makeInvoice(sendData) {
+    let divOuter = document.getElementById('divOuter');
     try {
-        document.getElementById('divOuter').style.display = 'none';
+        divOuter.style.display = 'none';
         let response = await Common.sendToBackend('payment/make', sendData);
         window.location.href = response.invoiceLink;
         Common.saveToStorage({ cartItemList: '', });
         showImgCartWithItem(false);
     } catch (errorMessage) {
-        alert(errorMessage);
-        document.getElementById('divOuter').style.display = 'grid';
+        SystemMessage.showMessageInfo(errorMessage, null, false, function () {
+            divOuter.style.display = 'grid';
+        });
     }
 };
 
@@ -520,6 +522,10 @@ async function sendEmailCode(email) {
             document.getElementById('divSendCodeSuccess').style.display = 'none';
         }, response.otpMinTime * 60 * 1000);
     } catch (errorMessage) {
-        alert(errorMessage);
+        let divOuter = document.getElementById('divOuter');
+        divOuter.style.display = 'none';
+        SystemMessage.showMessageInfo(errorMessage, null, false, function () {
+            divOuter.style.display = 'grid';
+        });
     }
 };

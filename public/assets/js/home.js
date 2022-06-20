@@ -3,7 +3,7 @@ window.addEventListener('load', async function () {
 
     let getProductListResult = await Common.getProductList();
     if (!getProductListResult.result) {
-        this.alert(getProductListResult.message);
+        Common.show(getProductListResult.message);
         return;
     }
     window.categoryList = getProductListResult.categoryList;

@@ -7500,3 +7500,37 @@ div.cart-send-code-success {
   padding: 5px;
   display: none;
 }
+
+/* Style for SystemMessage */
+
+div.message-info-outer {
+  border: 2px solid whitesmoke;
+  border-radius: 2px;
+  text-align: center;
+  background-color: black;
+  max-width: 280px;
+}
+
+div.message-info-title {
+  font-size: medium;
+  font-weight: bold;
+  padding: 10px;
+}
+
+div.message-info-message {
+  font-size: small;
+  padding: 10px;
+}
+
+div.message-info-button {
+  cursor: pointer;
+  font-size: medium;
+  font-weight: bold;
+  padding: 10px;
+}
+
+div.message-info-button:hover {
+  color: #00ea32;
+}
+
+/* End of style for SystemMessage */

@@ -1,3 +1,52 @@
+class SystemMessage {
+    static showMessageInfo(message, buttonLabel, closeBackground, callback) {
+        let divBackground = SystemMessage.getDivBackground();
+        let divOuter = document.createElement('div');
+        divOuter.classList = 'message-info-outer';
+        divBackground.appendChild(divOuter);
+
+        let divTitle = document.createElement('div');
+        divTitle.classList = 'message-info-title';
+        divTitle.innerText = 'Thông báo';
+        divOuter.appendChild(divTitle);
+
+        let divMessage = document.createElement('div');
+        divMessage.classList = 'message-info-message';
+        divMessage.innerHTML = message;
+        divOuter.appendChild(divMessage);
+
+        let divButton = document.createElement('div');
+        divButton.classList = 'message-info-button';
+        divButton.innerText = buttonLabel;
+        if (buttonLabel == null) {
+            divButton.innerText = 'OK';
+        }
+        divOuter.appendChild(divButton);
+        divButton.onclick = function () {
+            let divBackground = document.getElementById('divCartBackground');
+            if (closeBackground === false) {
+                divBackground.removeChild(divOuter);
+            } else {
+                document.body.removeChild(divBackground);
+            }
+            if (callback) {
+                callback();
+            }
+        };
+    };
+
+    static getDivBackground() {
+        let divBackground = document.getElementById('divCartBackground');
+        if (divBackground == null) {
+            divBackground = document.createElement('div');
+            divBackground.id = 'divCartBackground';
+            divBackground.className = 'popup-background';
+            document.body.appendChild(divBackground);
+        }
+        return divBackground;
+    };
+};
+
 class Common {
     static sendToBackend(webPart, dataJson) {
         let url = window.BACKEND_URL + webPart;
@@ -48,12 +97,12 @@ class Common {
         });
     };
 
-    static show(messageType, message) {
+    static show(message) {
         if (typeof SystemMessage !== 'function') {
             alert(message);
             return;
         }
-        new SystemMessage(SystemMessage(messageType, message));
+        SystemMessage.showMessageInfo(message);
     };
 
     static parseJSON(input) {

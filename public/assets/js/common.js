@@ -378,11 +378,11 @@ class Common {
 
     static async runScript() {
         let scriptList = [
-            { script: 'jquery-3.6.0.min.js', time: 400, },
-            { script: 'migrate.js', time: 100, },
-            { script: 'library.js', time: 400, },
-            { script: 'aos.js', time: 100, },
-            { script: 'script.js?ver=1.0.2', time: 100, },];
+            { script: 'jquery-3.6.0.min.js', time: 500, },
+            { script: 'migrate.js', time: 80, },
+            { script: 'library.js', time: 350, },
+            { script: 'aos.js', time: 80, },
+            { script: 'script.js?ver=1.0.2', time: 80, },];
         for (let i = 0; i < scriptList.length; i++) {
             let script = document.createElement("script");
             script.setAttribute("type", "text/javascript");

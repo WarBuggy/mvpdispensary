@@ -377,13 +377,18 @@ class Common {
     };
 
     static async runScript() {
-        let scriptList = ['jquery-3.6.0.min.js', 'migrate.js', 'library.js', 'aos.js', 'script.js?ver=1.0.2'];
+        let scriptList = [
+            { script: 'jquery-3.6.0.min.js', time: 400, },
+            { script: 'migrate.js', time: 100, },
+            { script: 'library.js', time: 400, },
+            { script: 'aos.js', time: 100, },
+            { script: 'script.js?ver=1.0.2', time: 100, },];
         for (let i = 0; i < scriptList.length; i++) {
             let script = document.createElement("script");
             script.setAttribute("type", "text/javascript");
-            script.setAttribute("src", `assets/js/${scriptList[i]}`);
+            script.setAttribute("src", `assets/js/${scriptList[i].script}`);
             document.getElementsByTagName("head")[0].appendChild(script);
-            await Common.sleep(window.SCRIPT_LOAD_DELAY || 1000);
+            await Common.sleep(scriptList[i].time || 500);
         }
     };
 

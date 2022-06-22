@@ -48,7 +48,6 @@ module.exports = {
 public/assets/js/backendURL.js
 window.BACKEND_URL = 'https://capsulestudio.com.vn/api_mvpdispensary/';
 window.FRONTEND_URL = 'https://capsulestudio.com.vn/mvpdispensary/';
-window.SCRIPT_LOAD_DELAY = 200; // the time delay between each script loading
 
 # Database
 Database structure can be import from file sql/structure.sql

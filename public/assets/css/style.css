@@ -62,8 +62,8 @@ footer,
   height: 100%;
   background: #000000;
   color: #ffffff;
-  -webkit-mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
-  mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
+  -webkit-mask: url("../upload/nature-sprite.png");
+  mask: url("../upload/nature-sprite.png");
   -webkit-mask-size: 2300% 100%;
   mask-size: 2300% 100%;
 }
@@ -5600,8 +5600,8 @@ ul.menu>li>ul>li>ul>li>ul>li:hover>a {
   height: 100%;
   font-size: 16px;
   background: #000;
-  -webkit-mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
-  mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
+  -webkit-mask: url("../upload/nature-sprite.png");
+  mask: url("../upload/nature-sprite.png");
   -webkit-mask-size: 2300% 100%;
   mask-size: 2300% 100%;
   border: none;
@@ -5622,8 +5622,8 @@ ul.menu>li>a,
 ul.menu>li.menu-item-has-children>ul {
   overflow: hidden;
   background: #000000;
-  -webkit-mask: url("https://raw.githubusercontent.com/pizza3/asset/master/natureSmaller.png");
-  mask: url("https://raw.githubusercontent.com/pizza3/asset/master/natureSmaller.png");
+  -webkit-mask: url("../upload/natureSmaller.png");
+  mask: url("../upload/natureSmaller.png");
   -webkit-mask-size: 7100% 100%;
   mask-size: 7100% 100%;
   border: none;

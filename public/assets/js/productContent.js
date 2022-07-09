@@ -87,7 +87,7 @@ function populateProductOtherImage(product) {
 function populateProductSlider(productId) {
     let relatedProductList = {};
     for (const id in window.productList) {
-        if (idInList.indexOf(parseInt(id)) >= 0) {
+        if (id == productId) {
             continue;
         }
         let product = window.productList[id];

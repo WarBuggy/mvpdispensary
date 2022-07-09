@@ -21,7 +21,10 @@ window.addEventListener('load', async function () {
     document.getElementById('spanTitle').innerText = param.titleText;
 
     let idInList = populateProductList(param);
-    populateProductSlider(idInList);
+    if (idInList != null) {
+        idInList = sortByPriority(idInList);
+        populateProductSlider(idInList);
+    }
 
     Common.runScript();
 });
@@ -110,5 +113,25 @@ function populateProductSlider(idInList) {
         let div = Common.createDivProductSlider(product);
         outer.appendChild(div);
     }
+};
+
+function sortByPriority(idInList) {
+    let newIdList = [];
+    let tempList = [];
+    for (let i = 0; i < idInList.length; i++) {
+        let id = idInList[i];
+        let object = {
+            id,
+            priority: window.productList[id].priority,
+        };
+        tempList.push(object);
+    }
+    tempList.sort(function (a, b) {
+        return b.priority - a.priority;
+    });
+    for (let i = 0; i < tempList.length; i++) {
+        newIdList.push(tempList[i].id);
+    }
+    return newIdList;
 };
 

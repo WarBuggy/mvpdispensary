@@ -104,7 +104,6 @@ function populateProductSlider(idInList) {
         return;
     }
     let relatedProductList = {};
-    let outer = document.getElementById('divProductSlider');
     for (const id in window.productList) {
         if (idInList.indexOf(parseInt(id)) >= 0) {
             continue;
@@ -116,9 +115,10 @@ function populateProductSlider(idInList) {
         };
     }
     let sortId = sortByPriority(relatedProductList);
+    let outer = document.getElementById('divProductSlider');
     for (let i = 0; i < sortId.length; i++) {
         let productId = sortId[i];
-        let product = relatedProductList[productId];
+        let product = window.productList[productId];
         let div = Common.createDivProductSlider(product);
         outer.appendChild(div);
     }

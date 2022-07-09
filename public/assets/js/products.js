@@ -82,6 +82,7 @@ function populateProductList(param) {
         hCategoryTitle.id = `cat${categoryId}`;
         divParent.appendChild(hCategoryTitle);
 
+        let sortId = sortByPriority(category.productList);
         for (let i = 0; i < sortId.length; i++) {
             let productId = sortId[i];
             let product = category.productList[productId];

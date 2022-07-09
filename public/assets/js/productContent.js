@@ -85,12 +85,22 @@ function populateProductOtherImage(product) {
 };
 
 function populateProductSlider(productId) {
-    let outer = document.getElementById('divProductSlider');
+    let relatedProductList = {};
     for (const id in window.productList) {
-        let product = window.productList[id];
-        if (product.id == productId) {
+        if (idInList.indexOf(parseInt(id)) >= 0) {
             continue;
         }
+        let product = window.productList[id];
+        relatedProductList[id] = {
+            id,
+            priority: product.priority,
+        };
+    }
+    let sortId = Common.sortByPriority(relatedProductList);
+    let outer = document.getElementById('divProductSlider');
+    for (let i = 0; i < sortId.length; i++) {
+        let productId = sortId[i];
+        let product = window.productList[productId];
         let div = Common.createDivProductSlider(product);
         outer.appendChild(div);
     }

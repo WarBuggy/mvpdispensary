@@ -442,6 +442,27 @@ class Common {
             }, ms);
         });
     };
+
+    static sortByPriority(productList) {
+        let idInList = Object.keys(productList);
+        let sortId = [];
+        let tempList = [];
+        for (let i = 0; i < idInList.length; i++) {
+            let id = idInList[i];
+            let object = {
+                id,
+                priority: productList[id].priority,
+            };
+            tempList.push(object);
+        }
+        tempList.sort(function (a, b) {
+            return b.priority - a.priority;
+        });
+        for (let i = 0; i < tempList.length; i++) {
+            sortId.push(tempList[i].id);
+        }
+        return sortId;
+    };
 };
 
 window.addEventListener('load', async function () {

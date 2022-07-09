@@ -82,7 +82,7 @@ function populateProductList(param) {
         hCategoryTitle.id = `cat${categoryId}`;
         divParent.appendChild(hCategoryTitle);
 
-        let sortId = sortByPriority(category.productList);
+        let sortId = Common.sortByPriority(category.productList);
         for (let i = 0; i < sortId.length; i++) {
             let productId = sortId[i];
             let product = category.productList[productId];
@@ -114,7 +114,7 @@ function populateProductSlider(idInList) {
             priority: product.priority,
         };
     }
-    let sortId = sortByPriority(relatedProductList);
+    let sortId = Common.sortByPriority(relatedProductList);
     let outer = document.getElementById('divProductSlider');
     for (let i = 0; i < sortId.length; i++) {
         let productId = sortId[i];
@@ -123,25 +123,3 @@ function populateProductSlider(idInList) {
         outer.appendChild(div);
     }
 };
-
-function sortByPriority(productList) {
-    let idInList = Object.keys(productList);
-    let sortId = [];
-    let tempList = [];
-    for (let i = 0; i < idInList.length; i++) {
-        let id = idInList[i];
-        let object = {
-            id,
-            priority: productList[id].priority,
-        };
-        tempList.push(object);
-    }
-    tempList.sort(function (a, b) {
-        return b.priority - a.priority;
-    });
-    for (let i = 0; i < tempList.length; i++) {
-        sortId.push(tempList[i].id);
-    }
-    return sortId;
-};
-

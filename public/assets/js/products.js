@@ -82,7 +82,6 @@ function populateProductList(param) {
         hCategoryTitle.id = `cat${categoryId}`;
         divParent.appendChild(hCategoryTitle);
 
-        let sortId = sortByPriority(category.productList);
         for (let i = 0; i < sortId.length; i++) {
             let productId = sortId[i];
             let product = category.productList[productId];
@@ -93,15 +92,6 @@ function populateProductList(param) {
             divParent.appendChild(divOuter);
             idInList.push(product.id);
         }
-        // for (const productId in category.productList) {
-        //     let product = category.productList[productId];
-        //     if (param.search != null && product.searchResult == false) {
-        //         continue;
-        //     }
-        //     let divOuter = Common.createDivProduct(product);
-        //     divParent.appendChild(divOuter);
-        //     idInList.push(product.id);
-        // }
     }
     return idInList;
 };
@@ -112,12 +102,22 @@ function populateProductSlider(idInList) {
         document.getElementById('divSliderOuter').style.display = 'none';
         return;
     }
+    let relatedProductList = {};
     let outer = document.getElementById('divProductSlider');
     for (const id in window.productList) {
         if (idInList.indexOf(parseInt(id)) >= 0) {
             continue;
         }
         let product = window.productList[id];
+        relatedProductList[id] = {
+            id,
+            priority: product.priority,
+        };
+    }
+    let sortId = sortByPriority(relatedProductList);
+    for (let i = 0; i < sortId.length; i++) {
+        let productId = sortId[i];
+        let product = relatedProductList[productId];
         let div = Common.createDivProductSlider(product);
         outer.appendChild(div);
     }

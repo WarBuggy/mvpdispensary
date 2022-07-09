@@ -21,10 +21,7 @@ window.addEventListener('load', async function () {
     document.getElementById('spanTitle').innerText = param.titleText;
 
     let idInList = populateProductList(param);
-    if (idInList != null) {
-        let sortIdInList = sortByPriority(idInList);
-        populateProductSlider(sortIdInList);
-    }
+    populateProductSlider(idInList);
 
     Common.runScript();
 });
@@ -85,7 +82,9 @@ function populateProductList(param) {
         hCategoryTitle.id = `cat${categoryId}`;
         divParent.appendChild(hCategoryTitle);
 
-        for (const productId in category.productList) {
+        let sortId = sortByPriority(category.productList);
+        for (let i = 0; i < sortId.length; i++) {
+            let productId = sortId[i];
             let product = category.productList[productId];
             if (param.search != null && product.searchResult == false) {
                 continue;
@@ -94,6 +93,15 @@ function populateProductList(param) {
             divParent.appendChild(divOuter);
             idInList.push(product.id);
         }
+        // for (const productId in category.productList) {
+        //     let product = category.productList[productId];
+        //     if (param.search != null && product.searchResult == false) {
+        //         continue;
+        //     }
+        //     let divOuter = Common.createDivProduct(product);
+        //     divParent.appendChild(divOuter);
+        //     idInList.push(product.id);
+        // }
     }
     return idInList;
 };
@@ -105,33 +113,25 @@ function populateProductSlider(idInList) {
         return;
     }
     let outer = document.getElementById('divProductSlider');
-    for (let i = 0; i < idInList.length; i++) {
-        let id = idInList[i];
-        let product = window.productList[id];
-        if (product == null) {
+    for (const id in window.productList) {
+        if (idInList.indexOf(parseInt(id)) >= 0) {
             continue;
         }
+        let product = window.productList[id];
         let div = Common.createDivProductSlider(product);
         outer.appendChild(div);
     }
-    // for (const id in window.productList) {
-    //     if (idInList.indexOf(parseInt(id)) >= 0) {
-    //         continue;
-    //     }
-    //     let product = window.productList[id];
-    //     let div = Common.createDivProductSlider(product);
-    //     outer.appendChild(div);
-    // }
 };
 
-function sortByPriority(idInList) {
-    let newIdList = [];
+function sortByPriority(productList) {
+    let idInList = Object.keys(productList);
+    let sortId = [];
     let tempList = [];
     for (let i = 0; i < idInList.length; i++) {
         let id = idInList[i];
         let object = {
             id,
-            priority: window.productList[id].priority,
+            priority: productList[id].priority,
         };
         tempList.push(object);
     }
@@ -139,8 +139,8 @@ function sortByPriority(idInList) {
         return b.priority - a.priority;
     });
     for (let i = 0; i < tempList.length; i++) {
-        newIdList.push(tempList[i].id);
+        sortId.push(tempList[i].id);
     }
-    return newIdList;
+    return sortId;
 };
 

@@ -223,7 +223,20 @@ class Common {
     };
 
     static populateCategoryMenuItem(parentElement, linkPrefix) {
+        let categoryWithPriorityList = [];
         for (const categoryId in window.categoryList) {
+            let category = window.categoryList[categoryId];
+            categoryWithPriorityList.push({
+                id: categoryId,
+                priority: category.priority,
+            });
+        }
+        categoryWithPriorityList.sort(function (a, b) {
+            return b.priority - a.priority;
+        });
+
+        for (let i = 0; i < categoryWithPriorityList.length; i++) {
+            let categoryId = categoryWithPriorityList[i].id;
             let category = window.categoryList[categoryId];
             let li = document.createElement('li');
             li.style['margin-left'] = '15px';

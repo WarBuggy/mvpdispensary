@@ -7249,6 +7249,12 @@ h3.category-title {
   grid-column: var(--grid-product-category-title);
   text-align: center;
   scroll-margin-top: 80px;
+  cursor: pointer;
+}
+
+h3.category-title:hover {
+  text-decoration: underline;
+  color: #00ea32;
 }
 
 div.no-search-result {

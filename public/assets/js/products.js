@@ -78,9 +78,12 @@ function populateProductList(param) {
         }
         let hCategoryTitle = document.createElement('h3');
         hCategoryTitle.classList.add('category-title');
-        hCategoryTitle.innerText = category.name;
         hCategoryTitle.id = `cat${categoryId}`;
         divParent.appendChild(hCategoryTitle);
+        let a = document.createElement('a');
+        a.setAttribute('href', `products.html?cat=${categoryId}`);
+        a.innerText = category.name;
+        hCategoryTitle.appendChild(a);
 
         let sortId = Common.sortByPriority(category.productList);
         for (let i = 0; i < sortId.length; i++) {

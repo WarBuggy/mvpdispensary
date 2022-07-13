@@ -45,11 +45,11 @@ function populateProductList() {
         let category = window.categoryList[categoryId];
         let hCategoryTitle = document.createElement('h3');
         hCategoryTitle.classList.add('category-title');
-        hCategoryTitle.innerText = category.name;
         hCategoryTitle.id = `cat${categoryId}`;
         divParent.appendChild(hCategoryTitle);
         let a = document.createElement('a');
         a.setAttribute('href', `products.html?cat=${categoryId}`);
+        a.innerText = category.name;
         hCategoryTitle.appendChild(a);
 
         for (const productId in category.productList) {

@@ -66,7 +66,21 @@ function populateProductList(param) {
         document.getElementById('divNoSearchResult').style.display = 'block';
         return idInList;
     }
+
+    let categoryWithPriorityList = [];
     for (const categoryId in list) {
+        let category = window.categoryList[categoryId];
+        categoryWithPriorityList.push({
+            id: categoryId,
+            priority: category.priority,
+        });
+    }
+    categoryWithPriorityList.sort(function (a, b) {
+        return b.priority - a.priority;
+    });
+
+    for (let i = 0; i < categoryWithPriorityList.length; i++) {
+        let categoryId = categoryWithPriorityList[i];
         if (param.category != null) {
             if (param.category != categoryId) {
                 continue;

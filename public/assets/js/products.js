@@ -80,7 +80,7 @@ function populateProductList(param) {
     });
 
     for (let i = 0; i < categoryWithPriorityList.length; i++) {
-        let categoryId = categoryWithPriorityList[i];
+        let categoryId = categoryWithPriorityList[i].id;
         if (param.category != null) {
             if (param.category != categoryId) {
                 continue;
